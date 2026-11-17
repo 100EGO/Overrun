@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
     private InputAction playerJumpAction;
     
     [SerializeField] private Transform playerCamera;
+    [SerializeField] private PlayerAim playerAim;
 
     private float playerWalkSpeed = 5f;
     private float playerRotateDamping = 0.1f;
@@ -52,9 +53,18 @@ public class Player : MonoBehaviour
         if (playerDirection.magnitude >= 0.1f)
         {
             float targetAngle = Mathf.Atan2(playerDirection.x, playerDirection.z) * Mathf.Rad2Deg + playerCamera.eulerAngles.y;
-            float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, playerRotateDamping);
 
-            transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
+            if (playerAim == null || !playerAim.IsAiming)
+            {
+                float smoothAngle = Mathf.SmoothDampAngle(
+                    transform.eulerAngles.y,
+                    targetAngle,
+                    ref turnSmoothVelocity,
+                    playerRotateDamping
+                );
+
+                transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
+            }
 
             Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
             playerCharacterController.Move(moveDirection.normalized * playerWalkSpeed * Time.deltaTime + verticalMove);
