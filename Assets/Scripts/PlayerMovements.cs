@@ -5,10 +5,10 @@ public class Player : MonoBehaviour
 {
     public InputActionAsset inputActions;
     public CharacterController playerCharacterController;
-    
+
     private InputAction playerMoveAction;
     private InputAction playerJumpAction;
-
+    
     [SerializeField] private Transform playerCamera;
 
     private float playerWalkSpeed = 5f;
@@ -49,7 +49,7 @@ public class Player : MonoBehaviour
         Vector3 playerDirection = new Vector3(playerMoveAmount.x, 0f, playerMoveAmount.y).normalized;
         Vector3 verticalMove = new Vector3(0f, verticalVelocity, 0f) * Time.deltaTime;
 
-        if(playerDirection.magnitude >= 0.1f)
+        if (playerDirection.magnitude >= 0.1f)
         {
             float targetAngle = Mathf.Atan2(playerDirection.x, playerDirection.z) * Mathf.Rad2Deg + playerCamera.eulerAngles.y;
             float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, playerRotateDamping);
@@ -67,11 +67,11 @@ public class Player : MonoBehaviour
 
     private void Jump()
     {
-        if(playerCharacterController.isGrounded)
+        if (playerCharacterController.isGrounded)
         {
             verticalVelocity = -1f;
-             
-            if(playerJumpAction.WasPressedThisFrame())
+
+            if (playerJumpAction.WasPressedThisFrame())
             {
                 verticalVelocity = jumpHeight;
             }
