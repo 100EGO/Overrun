@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8467888026748865622}
   - component: {fileID: 8391720657696709742}
   m_Layer: 0
-  m_Name: Enemy_Base
+  m_Name: Enemy_Tracker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
