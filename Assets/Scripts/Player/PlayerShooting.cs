@@ -8,7 +8,13 @@ public class PlayerShooting : MonoBehaviour
     [SerializeField, Min(0f)] private float damage = 25f;
     [SerializeField] private float shotHeight = 0.5f;
 
+    private PlayerAnimation playerAnimation;
     private float nextShotTime;
+
+    private void Awake()
+    {
+        playerAnimation = GetComponent<PlayerAnimation>();
+    }
 
     private void Update()
     {
@@ -24,6 +30,8 @@ public class PlayerShooting : MonoBehaviour
 
     private void Shoot()
     {
+        playerAnimation?.PlayShoot();
+
         Vector3 origin = transform.position + Vector3.up * shotHeight;
         Vector3 direction = transform.forward;
 
