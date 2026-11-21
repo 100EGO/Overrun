@@ -114,7 +114,9 @@ public class PlayerShooting : MonoBehaviour
 
     private void Shoot()
     {
-        Vector3 origin = transform.position + Vector3.up * shotHeight;
+        Vector3 origin = muzzlePoint != null
+            ? muzzlePoint.position
+            : transform.position + Vector3.up * shotHeight;
         Vector3 direction = transform.forward;
 
         Debug.DrawRay(origin, direction * range, Color.yellow, 0.25f);
