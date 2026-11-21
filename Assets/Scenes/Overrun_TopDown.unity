@@ -2610,6 +2610,11 @@ MonoBehaviour:
   dividerContainer: {fileID: 925605925}
   dividerColor: {r: 0, g: 0, b: 0, a: 1}
   dividerWidth: 3
+--- !u!4 &1035701619 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -1657807252750458521, guid: 6de4c0179aadc7743b669629570b416c, type: 3}
+  m_PrefabInstance: {fileID: 1158775173}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1143877357
 GameObject:
   m_ObjectHideFlags: 0
@@ -2699,7 +2704,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 6de4c0179aadc7743b669629570b416c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1427205721}
   m_SourcePrefab: {fileID: 100100000, guid: 6de4c0179aadc7743b669629570b416c, type: 3}
 --- !u!1 &1183487002
 GameObject:
@@ -3043,6 +3051,29 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1425275566}
   m_CullTransparentMesh: 1
+--- !u!1 &1427205719 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 6de4c0179aadc7743b669629570b416c, type: 3}
+  m_PrefabInstance: {fileID: 1158775173}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1427205721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1427205719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7a4f6d28e1c4f0a9d35c7e12b8f604d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurretAutoTarget
+  yawPivot: {fileID: 1035701619}
+  detectionRange: 15
+  scanInterval: 0.2
+  rotationSpeed: 180
+  yawAxis: {x: 0, y: 0, z: 1}
+  forwardAxis: {x: 0, y: -1, z: 0}
 --- !u!1 &1438888711
 GameObject:
   m_ObjectHideFlags: 0
