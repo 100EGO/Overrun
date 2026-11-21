@@ -8,6 +8,7 @@ public class PlayerHealth : MonoBehaviour
     private bool isDead;
 
     public float CurrentHealth => currentHealth;
+    public bool IsDead => isDead;
 
     private void Awake()
     {
@@ -23,10 +24,22 @@ public class PlayerHealth : MonoBehaviour
         Debug.Log($"Player health: {currentHealth}/{maxHealth}", this);
 
         if (currentHealth <= 0f)
-        {
-            isDead = true;
-            Debug.Log("Player defeated!", this);
-            // Respawn and game-over screen will be added later.
-        }
+            Die();
+    }
+
+    private void Die()
+    {
+        isDead = true;
+        // Keep the GameObject and Animator active so the death animation can play.
+        if (TryGetComponent(out TopDownPlayerMovement movement))
+            movement.enabled = false;
+        if (TryGetComponent(out TopDownPlayerAim aim))
+            aim.enabled = false;
+        if (TryGetComponent(out PlayerShooting shooting))
+            shooting.enabled = false;
+        if (TryGetComponent(out PlayerAnimation animation))
+            animation.PlayDeath();
+
+        Debug.Log("Player defeated!", this);
     }
 }
