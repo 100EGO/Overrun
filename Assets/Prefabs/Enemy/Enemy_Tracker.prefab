@@ -117,6 +117,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyTargeting
   targetType: 0
+  prioritizeTurrets: 0
+  turretDetectionRange: 20
 --- !u!1 &8242191555171750762
 GameObject:
   m_ObjectHideFlags: 0

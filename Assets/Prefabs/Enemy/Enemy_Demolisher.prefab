@@ -72,6 +72,10 @@ PrefabInstance:
       propertyPath: targetType
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7936274193693370433, guid: 3a63cf6034400724289a808c995e133e, type: 3}
+      propertyPath: prioritizeTurrets
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

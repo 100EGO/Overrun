@@ -2892,7 +2892,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1143877358}
   m_Layer: 0
-  m_Name: SpawPointa
+  m_Name: SpawPoints
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2978,6 +2978,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 6de4c0179aadc7743b669629570b416c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1427205721}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 6de4c0179aadc7743b669629570b416c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1427205724}
     - targetCorrespondingSourceObject: {fileID: -6927223876126280745, guid: 6de4c0179aadc7743b669629570b416c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1534599214}
@@ -3424,8 +3427,21 @@ MonoBehaviour:
   projectilePrefab: {fileID: 2906821614828089645, guid: c25897176a45af944be7ea72ac7425a1, type: 3}
   projectileSpeed: 25
   shotsPerSecond: 2
-  damage: 15
+  damage: 0
   aimToleranceDegrees: 5
+--- !u!114 &1427205724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1427205719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47108d9dfd8a4bf4c8c305dd16e4528c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurretHealth
+  maxHealth: 100
 --- !u!1 &1438888711
 GameObject:
   m_ObjectHideFlags: 0
