@@ -1,8 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-/// Automatically tracks the nearest enemy with yaw only, then fires straight ahead.
-/// No gun pitch or projectile drop.
+/// Tracks the nearest enemy with yaw only and fires moving projectiles straight ahead.
 /// </summary>
 public class TurretAutoTarget : MonoBehaviour
 {
@@ -20,10 +19,11 @@ public class TurretAutoTarget : MonoBehaviour
     [SerializeField] private Vector3 forwardAxis = Vector3.forward;
 
     [Header("Shooting")]
+    [SerializeField] private CombatProjectile projectilePrefab;
+    [SerializeField, Min(0.1f)] private float projectileSpeed = 25f;
     [SerializeField, Min(0.1f)] private float shotsPerSecond = 2f;
     [SerializeField, Min(0f)] private float damage = 15f;
     [SerializeField, Range(0.1f, 30f)] private float aimToleranceDegrees = 5f;
-    [SerializeField] private LayerMask hitLayers = ~0;
 
     private EnemyHealth target;
     private float nextScanTime;
@@ -54,7 +54,6 @@ public class TurretAutoTarget : MonoBehaviour
         float step = Mathf.Clamp(angle, -rotationSpeed * Time.deltaTime, rotationSpeed * Time.deltaTime);
         yawPivot.rotation = Quaternion.AngleAxis(step, worldAxis) * yawPivot.rotation;
 
-        // Recalculate after rotating. Fire only once the barrel faces the enemy.
         flatForward = Vector3.ProjectOnPlane(
             yawPivot.TransformDirection(forwardAxis.normalized), worldAxis).normalized;
         flatTarget = Vector3.ProjectOnPlane(target.transform.position - yawPivot.position, worldAxis);
@@ -63,6 +62,13 @@ public class TurretAutoTarget : MonoBehaviour
             flatTarget.sqrMagnitude > 0.0001f &&
             Vector3.Angle(flatForward, flatTarget) <= aimToleranceDegrees)
         {
+            if (projectilePrefab == null)
+            {
+                Debug.LogWarning("TurretAutoTarget: assign a CombatProjectile prefab in the Inspector.", this);
+                nextShotTime = Time.time + 1f;
+                return;
+            }
+
             Fire(flatForward);
             nextShotTime = Time.time + 1f / shotsPerSecond;
         }
@@ -71,32 +77,9 @@ public class TurretAutoTarget : MonoBehaviour
     private void Fire(Vector3 direction)
     {
         Vector3 origin = muzzlePoint != null ? muzzlePoint.position : yawPivot.position;
-        Debug.DrawRay(origin, direction * detectionRange, Color.yellow, 0.2f);
-
-        // Find the first obstacle, ignoring the turret's own colliders.
-        RaycastHit[] hits = Physics.RaycastAll(origin, direction, detectionRange,
-            hitLayers, QueryTriggerInteraction.Ignore);
-
-        float closestDistance = detectionRange + 0.001f;
-        Collider closestCollider = null;
-
-        foreach (RaycastHit hit in hits)
-        {
-            if (hit.collider.transform == transform || hit.collider.transform.IsChildOf(transform))
-                continue;
-
-            if (hit.distance < closestDistance)
-            {
-                closestDistance = hit.distance;
-                closestCollider = hit.collider;
-            }
-        }
-
-        if (closestCollider != null &&
-            closestCollider.GetComponentInParent<EnemyHealth>() is EnemyHealth enemy)
-        {
-            enemy.TakeDamage(damage);
-        }
+        CombatProjectile projectile = Instantiate(projectilePrefab, origin,
+            Quaternion.LookRotation(direction));
+        projectile.Initialize(direction, projectileSpeed, damage, detectionRange, transform.root);
     }
 
     private void FindNearestEnemy()
