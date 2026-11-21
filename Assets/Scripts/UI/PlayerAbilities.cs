@@ -20,6 +20,7 @@ public class PlayerAbilities : MonoBehaviour
 
         [HideInInspector] public float readyAt;
         [HideInInspector] public Color originalIconColor;
+        [HideInInspector] public Color originalFillColor;
     }
 
     [Header("Q ability")]
@@ -30,6 +31,7 @@ public class PlayerAbilities : MonoBehaviour
 
     [Header("Appearance")]
     [SerializeField] private Color cooldownTint = new Color(0.45f, 0.45f, 0.45f, 1f);
+    [SerializeField] private Color cooldownFillColor = Color.red;
 
     private void Awake()
     {
@@ -58,6 +60,8 @@ public class PlayerAbilities : MonoBehaviour
         slot.readyAt = 0f;
         if (slot.iconImage != null)
             slot.originalIconColor = slot.iconImage.color;
+        if (slot.fillImage != null)
+            slot.originalFillColor = slot.fillImage.color;
 
         Refresh(slot);
     }
@@ -79,11 +83,14 @@ public class PlayerAbilities : MonoBehaviour
         float remaining = Mathf.Max(0f, slot.readyAt - Time.time);
         bool coolingDown = remaining > 0f;
 
-        // Full when ready; drains to empty over the cooldown.
+        // Empty immediately after activation, then fills up as the cooldown expires.
         if (slot.fillImage != null)
+        {
             slot.fillImage.fillAmount = coolingDown
-                ? Mathf.Clamp01(remaining / slot.cooldownSeconds)
+                ? Mathf.Clamp01(1f - remaining / slot.cooldownSeconds)
                 : 1f;
+            slot.fillImage.color = coolingDown ? cooldownFillColor : slot.originalFillColor;
+        }
 
         if (slot.iconImage != null)
             slot.iconImage.color = coolingDown ? cooldownTint : slot.originalIconColor;
