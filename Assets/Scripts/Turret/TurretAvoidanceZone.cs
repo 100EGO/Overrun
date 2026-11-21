@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>Horizontal clearance radius used by EnemyChase; not a physics collider.</summary>
+/// <summary>A small circular clearance area around a turret. No physics collider required.</summary>
 public class TurretAvoidanceZone : MonoBehaviour
 {
     public static readonly List<TurretAvoidanceZone> ActiveZones = new List<TurretAvoidanceZone>();
 
-    [SerializeField, Min(0.2f)] private float radius = 2.5f;
+    [SerializeField, Min(0.2f)] private float radius = 1.2f;
     public float Radius => radius;
 
     private void OnEnable()
@@ -26,9 +26,8 @@ public class TurretAvoidanceZone : MonoBehaviour
         {
             float a = i * Mathf.PI * 2f / segments;
             float b = (i + 1) * Mathf.PI * 2f / segments;
-            Vector3 p1 = center + new Vector3(Mathf.Cos(a), 0f, Mathf.Sin(a)) * radius;
-            Vector3 p2 = center + new Vector3(Mathf.Cos(b), 0f, Mathf.Sin(b)) * radius;
-            Gizmos.DrawLine(p1, p2);
+            Gizmos.DrawLine(center + new Vector3(Mathf.Cos(a), 0f, Mathf.Sin(a)) * radius,
+                center + new Vector3(Mathf.Cos(b), 0f, Mathf.Sin(b)) * radius);
         }
     }
 }
