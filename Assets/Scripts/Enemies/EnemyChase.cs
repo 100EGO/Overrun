@@ -6,14 +6,11 @@ public class EnemyChase : MonoBehaviour
     [SerializeField, Min(0f)] private float moveSpeed = 2.5f;
     [SerializeField, Min(0f)] private float stoppingDistance = 1.5f;
 
-    [Header("Turret avoidance")]
-    [SerializeField, Min(0f)] private float avoidancePadding = 0.4f;
-    [SerializeField, Min(0.1f)] private float avoidanceLookAhead = 4f;
+    [Header("Turret clearance")]
+    [SerializeField, Min(0f)] private float avoidancePadding = 0.1f;
 
     private CharacterController controller;
     private EnemyTargeting targeting;
-    private TurretAvoidanceZone currentObstacle;
-    private float avoidanceSide;
 
     private void Awake()
     {
@@ -29,82 +26,66 @@ public class EnemyChase : MonoBehaviour
 
         Vector3 toTarget = target.position - transform.position;
         toTarget.y = 0f;
-
         if (toTarget.magnitude <= stoppingDistance)
             return;
 
-        Vector3 direction = GetAvoidanceDirection(toTarget.normalized);
-        controller.Move(direction * moveSpeed * Time.deltaTime);
+        Vector3 movement = toTarget.normalized * moveSpeed * Time.deltaTime;
+        movement = SlideAlongTurretZones(movement);
+        controller.Move(movement);
 
-        if (direction.sqrMagnitude > 0.001f)
-            transform.rotation = Quaternion.LookRotation(direction);
+        Vector3 facing = movement;
+        facing.y = 0f;
+        if (facing.sqrMagnitude > 0.0001f)
+            transform.rotation = Quaternion.LookRotation(facing);
     }
 
-    private Vector3 GetAvoidanceDirection(Vector3 desired)
+    private Vector3 SlideAlongTurretZones(Vector3 movement)
     {
         Vector3 position = transform.position;
         position.y = 0f;
-        TurretAvoidanceZone closest = null;
-        float nearest = float.PositiveInfinity;
 
-        foreach (TurretAvoidanceZone zone in TurretAvoidanceZone.ActiveZones)
+        // Apply the circle constraint a few times so adjacent turret zones work too.
+        for (int pass = 0; pass < 3; pass++)
         {
-            if (zone == null)
-                continue;
-
-            Vector3 center = zone.transform.position;
-            center.y = 0f;
-            Vector3 offset = center - position;
-            float radius = zone.Radius + avoidancePadding + controller.radius;
-            float along = Vector3.Dot(offset, desired);
-            float lookAhead = Mathf.Max(avoidanceLookAhead, radius);
-
-            // Ignore zones behind the enemy or too far from its intended path.
-            if (along < -radius || along > lookAhead + radius)
-                continue;
-
-            Vector3 closestOnPath = position + desired * Mathf.Clamp(along, 0f, lookAhead);
-            float pathDistance = Vector3.Distance(closestOnPath, center);
-            if (pathDistance >= radius)
-                continue;
-
-            float distance = offset.sqrMagnitude;
-            if (distance < nearest)
+            foreach (TurretAvoidanceZone zone in TurretAvoidanceZone.ActiveZones)
             {
-                nearest = distance;
-                closest = zone;
+                if (zone == null)
+                    continue;
+
+                Vector3 center = zone.transform.position;
+                center.y = 0f;
+                float radius = zone.Radius + controller.radius + avoidancePadding;
+
+                Vector3 fromCenter = position - center;
+                float distance = fromCenter.magnitude;
+                Vector3 normal = distance > 0.0001f ? fromCenter / distance : Vector3.right;
+
+                // Outside the circle: only change movement if this frame would enter it.
+                Vector3 next = position + movement;
+                Vector3 nextOffset = next - center;
+                if (nextOffset.sqrMagnitude >= radius * radius && distance >= radius)
+                    continue;
+
+                // Slide by removing the component that points into the obstacle.
+                float inward = Vector3.Dot(movement, normal);
+                if (inward < 0f)
+                    movement -= normal * inward;
+
+                // Exactly head-on, the tangent is zero. Give a small, stable
+                // sideways nudge to let the enemy start sliding around the edge.
+                if (movement.sqrMagnitude < 0.000001f && inward < 0f)
+                {
+                    Vector3 tangent = new Vector3(-normal.z, 0f, normal.x);
+                    float side = Vector3.Dot(tangent, transform.forward) >= 0f ? 1f : -1f;
+                    movement = tangent * side * (-inward * 0.35f);
+                }
+
+                // Push an enemy that is already inside the circle gently back out.
+                if (distance < radius)
+                    movement += normal * Mathf.Min(radius - distance, moveSpeed * Time.deltaTime);
             }
         }
 
-        if (closest == null)
-        {
-            currentObstacle = null;
-            return desired;
-        }
-
-        Vector3 away = position - closest.transform.position;
-        away.y = 0f;
-        float safeRadius = closest.Radius + avoidancePadding + controller.radius;
-        if (away.sqrMagnitude < 0.0001f)
-            away = -desired;
-
-        if (closest != currentObstacle)
-        {
-            currentObstacle = closest;
-            float cross = Vector3.Cross(desired, away).y;
-            avoidanceSide = Mathf.Abs(cross) > 0.01f
-                ? Mathf.Sign(cross)
-                : (transform.position.x + transform.position.z >= 0f ? 1f : -1f);
-        }
-
-        // Tangential movement around the clearance circle, plus an outward push.
-        Vector3 radial = away.normalized;
-        Vector3 tangent = avoidanceSide > 0f
-            ? new Vector3(radial.z, 0f, -radial.x)
-            : new Vector3(-radial.z, 0f, radial.x);
-
-        float distanceToCenter = away.magnitude;
-        float outwardWeight = distanceToCenter < safeRadius ? 1.5f : 0.35f;
-        return (tangent + radial * outwardWeight).normalized;
+        return movement;
     }
 }
