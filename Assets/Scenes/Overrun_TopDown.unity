@@ -162,6 +162,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy_Demolisher
       objectReference: {fileID: 0}
+    - target: {fileID: 3899588684712084832, guid: af20eb40b6d4cc447ab2b6eecd745c66, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6106496290977935240, guid: af20eb40b6d4cc447ab2b6eecd745c66, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6.45
@@ -683,6 +687,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy_Tracker
       objectReference: {fileID: 0}
+    - target: {fileID: 6432149103353938793, guid: 3a63cf6034400724289a808c995e133e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -745,8 +753,8 @@ MonoBehaviour:
     demolishers: 1
   - trackers: 5
     demolishers: 2
-  initialPreparationSeconds: 5
-  preparationSeconds: 5
+  initialPreparationSeconds: 0
+  preparationSeconds: 2
   spawnIntervalSeconds: 0.75
 --- !u!1 &832575517
 GameObject:
@@ -901,7 +909,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerShooting
   range: 20
   shotsPerSecond: 4
-  damage: 25
+  damage: 100
   shotHeight: 0.5
 --- !u!114 &917349047
 MonoBehaviour:
@@ -1580,6 +1588,53 @@ Transform:
   - {fileID: 335739801}
   m_Father: {fileID: 917349042}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2120701883
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2120701884}
+  - component: {fileID: 2120701885}
+  m_Layer: 0
+  m_Name: MissionManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2120701884
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2120701883}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -38.79005, y: -0, z: -5.09409}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2120701885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2120701883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c1feaa9025641969c645a10f64c8db3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MissionManager
+  playerHealth: {fileID: 917349049}
+  buildingHealth: {fileID: 1388910358}
+  waveManager: {fileID: 512076576}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1595,3 +1650,4 @@ SceneRoots:
   - {fileID: 444863352}
   - {fileID: 512076575}
   - {fileID: 1143877358}
+  - {fileID: 2120701884}
