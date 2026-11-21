@@ -1002,6 +1002,9 @@ MonoBehaviour:
   shotsPerSecond: 4
   damage: 100
   shotHeight: 0.5
+  heldFireAnimationDelay: 0.3
+  magazineSize: 30
+  reloadDuration: 2
 --- !u!114 &917349047
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1149,7 +1152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9e2d79e573029044bb0d0551e1e0aab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
-  maxHealth: 100
+  maxHealth: 1
 --- !u!114 &917349050
 MonoBehaviour:
   m_ObjectHideFlags: 0
