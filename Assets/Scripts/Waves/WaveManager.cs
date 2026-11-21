@@ -9,11 +9,13 @@ public class WaveManager : MonoBehaviour
     {
         [Min(0)] public int trackers = 3;
         [Min(0)] public int demolishers = 1;
+        [Min(0)] public int turretHunters = 0;
     }
 
     [Header("Enemy prefabs")]
     [SerializeField] private GameObject trackerPrefab;
     [SerializeField] private GameObject demolisherPrefab;
+    [SerializeField] private GameObject turretHunterPrefab;
 
     [Header("Spawn points")]
     [SerializeField] private Transform[] spawnPoints;
@@ -21,9 +23,9 @@ public class WaveManager : MonoBehaviour
     [Header("Waves")]
     [SerializeField] private Wave[] waves =
     {
-        new Wave { trackers = 3, demolishers = 0 },
-        new Wave { trackers = 4, demolishers = 1 },
-        new Wave { trackers = 5, demolishers = 2 }
+        new Wave { trackers = 3, demolishers = 0, turretHunters = 0 },
+        new Wave { trackers = 4, demolishers = 1, turretHunters = 0 },
+        new Wave { trackers = 5, demolishers = 2, turretHunters = 1 }
     };
 
     [Header("Timing")]
@@ -73,6 +75,15 @@ public class WaveManager : MonoBehaviour
 
             yield return SpawnEnemies(trackerPrefab, wave.trackers);
             yield return SpawnEnemies(demolisherPrefab, wave.demolishers);
+            if (wave.turretHunters > 0)
+            {
+                if (turretHunterPrefab == null)
+                {
+                    Debug.LogError("WaveManager: assign Turret Hunter Prefab for waves containing turret hunters.", this);
+                    yield break;
+                }
+                yield return SpawnEnemies(turretHunterPrefab, wave.turretHunters);
+            }
 
             // Unity compares destroyed objects to null, so this also works
             // when EnemyHealth destroys an enemy GameObject on death.
