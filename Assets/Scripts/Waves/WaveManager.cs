@@ -33,6 +33,9 @@ public class WaveManager : MonoBehaviour
 
     private readonly List<EnemyHealth> activeEnemies = new List<EnemyHealth>();
 
+    public int TotalWaves => waves != null ? waves.Length : 0;
+    public int CurrentWave { get; private set; }
+    public int WavesRemaining => Mathf.Max(0, TotalWaves - CurrentWave);
     public bool IsComplete { get; private set; }
     public bool IsStopped { get; private set; }
 
@@ -63,6 +66,7 @@ public class WaveManager : MonoBehaviour
 
         for (int waveIndex = 0; waveIndex < waves.Length; waveIndex++)
         {
+            CurrentWave = waveIndex + 1;
             Wave wave = waves[waveIndex];
             Debug.Log($"Wave {waveIndex + 1}/{waves.Length} started!", this);
 
