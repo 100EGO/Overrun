@@ -35,6 +35,7 @@ public class WaveManager : MonoBehaviour
 
     public int TotalWaves => waves != null ? waves.Length : 0;
     public int CurrentWave { get; private set; }
+    public int CompletedWaves { get; private set; }
     public int WavesRemaining => Mathf.Max(0, TotalWaves - CurrentWave);
     public bool IsComplete { get; private set; }
     public bool IsStopped { get; private set; }
@@ -84,6 +85,10 @@ public class WaveManager : MonoBehaviour
                 yield return null;
             }
 
+            if (IsStopped)
+                yield break;
+
+            CompletedWaves = waveIndex + 1;
             Debug.Log($"Wave {waveIndex + 1} cleared!", this);
 
             if (waveIndex < waves.Length - 1)
