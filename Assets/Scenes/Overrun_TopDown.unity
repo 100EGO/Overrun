@@ -1653,7 +1653,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAbilities
   abilityQ:
-    abilityName: ABILITY Q
+    abilityName: Q
     cooldownSeconds: 5
     fillImage: {fileID: 1510839886}
     iconImage: {fileID: 0}
@@ -1662,7 +1662,7 @@ MonoBehaviour:
     originalIconColor: {r: 0, g: 0, b: 0, a: 0}
     originalFillColor: {r: 0, g: 0, b: 0, a: 0}
   abilityE:
-    abilityName: ABILITY E
+    abilityName: E
     cooldownSeconds: 5
     fillImage: {fileID: 1425275568}
     iconImage: {fileID: 0}
