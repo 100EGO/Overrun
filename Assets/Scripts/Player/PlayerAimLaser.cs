@@ -9,10 +9,12 @@ public class PlayerAimLaser : MonoBehaviour
     [SerializeField, Range(0f, 1f)] private float opacity = 0.45f;
 
     private LineRenderer line;
+    private PlayerShooting playerShooting;
 
     private void Awake()
     {
         line = GetComponent<LineRenderer>();
+        playerShooting = GetComponent<PlayerShooting>();
         line.useWorldSpace = true;
         line.positionCount = 2;
         line.startWidth = lineWidth;
@@ -24,7 +26,9 @@ public class PlayerAimLaser : MonoBehaviour
 
     private void LateUpdate()
     {
-        Vector3 origin = transform.position + Vector3.up * shotHeight;
+        Vector3 origin = playerShooting != null && playerShooting.MuzzlePoint != null
+            ? playerShooting.MuzzlePoint.position
+            : transform.position + Vector3.up * shotHeight;
         Vector3 direction = transform.forward;
         Vector3 end = origin + direction * range;
 
