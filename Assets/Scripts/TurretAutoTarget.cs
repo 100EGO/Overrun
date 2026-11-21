@@ -1,31 +1,33 @@
 using UnityEngine;
 
 /// <summary>
-/// Finds the closest enemy and rotates the turret head and gun toward it.
-/// Shooting will be added separately.
+/// Automatically tracks the nearest enemy with yaw only, then fires straight ahead.
+/// No gun pitch or projectile drop.
 /// </summary>
 public class TurretAutoTarget : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Transform yawPivot;
-    [SerializeField] private Transform pitchPivot;
+    [SerializeField] private Transform muzzlePoint;
 
     [Header("Targeting")]
     [SerializeField, Min(0.1f)] private float detectionRange = 15f;
     [SerializeField, Min(0.05f)] private float scanInterval = 0.2f;
     [SerializeField, Min(1f)] private float rotationSpeed = 180f;
-    [SerializeField, Min(1f)] private float pitchRotationSpeed = 90f;
 
     [Header("Yaw axes (local to yaw pivot)")]
     [SerializeField] private Vector3 yawAxis = Vector3.up;
     [SerializeField] private Vector3 forwardAxis = Vector3.forward;
 
-    [Header("Pitch axes (local to pitch pivot)")]
-    [SerializeField] private Vector3 pitchAxis = Vector3.right;
-    [SerializeField] private Vector3 pitchForwardAxis = Vector3.forward;
+    [Header("Shooting")]
+    [SerializeField, Min(0.1f)] private float shotsPerSecond = 2f;
+    [SerializeField, Min(0f)] private float damage = 15f;
+    [SerializeField, Range(0.1f, 30f)] private float aimToleranceDegrees = 5f;
+    [SerializeField] private LayerMask hitLayers = ~0;
 
     private EnemyHealth target;
     private float nextScanTime;
+    private float nextShotTime;
 
     private void Update()
     {
@@ -35,30 +37,66 @@ public class TurretAutoTarget : MonoBehaviour
             nextScanTime = Time.time + scanInterval;
         }
 
-        if (target == null)
+        if (yawPivot == null || target == null || yawAxis.sqrMagnitude < 0.0001f ||
+            forwardAxis.sqrMagnitude < 0.0001f)
             return;
 
-        RotateTowardTarget(yawPivot, yawAxis, forwardAxis, rotationSpeed);
-        RotateTowardTarget(pitchPivot, pitchAxis, pitchForwardAxis, pitchRotationSpeed);
-    }
-
-    private void RotateTowardTarget(Transform pivot, Vector3 localAxis, Vector3 localForward, float speed)
-    {
-        if (pivot == null || localAxis.sqrMagnitude < 0.0001f || localForward.sqrMagnitude < 0.0001f)
-            return;
-
-        Vector3 worldAxis = pivot.TransformDirection(localAxis.normalized);
-        Vector3 toTarget = target.transform.position - pivot.position;
+        Vector3 worldAxis = yawPivot.TransformDirection(yawAxis.normalized);
+        Vector3 toTarget = target.transform.position - yawPivot.position;
         Vector3 flatTarget = Vector3.ProjectOnPlane(toTarget, worldAxis);
         Vector3 flatForward = Vector3.ProjectOnPlane(
-            pivot.TransformDirection(localForward.normalized), worldAxis);
+            yawPivot.TransformDirection(forwardAxis.normalized), worldAxis);
 
         if (flatTarget.sqrMagnitude < 0.0001f || flatForward.sqrMagnitude < 0.0001f)
             return;
 
         float angle = Vector3.SignedAngle(flatForward, flatTarget, worldAxis);
-        float step = Mathf.Clamp(angle, -speed * Time.deltaTime, speed * Time.deltaTime);
-        pivot.rotation = Quaternion.AngleAxis(step, worldAxis) * pivot.rotation;
+        float step = Mathf.Clamp(angle, -rotationSpeed * Time.deltaTime, rotationSpeed * Time.deltaTime);
+        yawPivot.rotation = Quaternion.AngleAxis(step, worldAxis) * yawPivot.rotation;
+
+        // Recalculate after rotating. Fire only once the barrel faces the enemy.
+        flatForward = Vector3.ProjectOnPlane(
+            yawPivot.TransformDirection(forwardAxis.normalized), worldAxis).normalized;
+        flatTarget = Vector3.ProjectOnPlane(target.transform.position - yawPivot.position, worldAxis);
+
+        if (Time.time >= nextShotTime &&
+            flatTarget.sqrMagnitude > 0.0001f &&
+            Vector3.Angle(flatForward, flatTarget) <= aimToleranceDegrees)
+        {
+            Fire(flatForward);
+            nextShotTime = Time.time + 1f / shotsPerSecond;
+        }
+    }
+
+    private void Fire(Vector3 direction)
+    {
+        Vector3 origin = muzzlePoint != null ? muzzlePoint.position : yawPivot.position;
+        Debug.DrawRay(origin, direction * detectionRange, Color.yellow, 0.2f);
+
+        // Find the first obstacle, ignoring the turret's own colliders.
+        RaycastHit[] hits = Physics.RaycastAll(origin, direction, detectionRange,
+            hitLayers, QueryTriggerInteraction.Ignore);
+
+        float closestDistance = detectionRange + 0.001f;
+        Collider closestCollider = null;
+
+        foreach (RaycastHit hit in hits)
+        {
+            if (hit.collider.transform == transform || hit.collider.transform.IsChildOf(transform))
+                continue;
+
+            if (hit.distance < closestDistance)
+            {
+                closestDistance = hit.distance;
+                closestCollider = hit.collider;
+            }
+        }
+
+        if (closestCollider != null &&
+            closestCollider.GetComponentInParent<EnemyHealth>() is EnemyHealth enemy)
+        {
+            enemy.TakeDamage(damage);
+        }
     }
 
     private void FindNearestEnemy()
