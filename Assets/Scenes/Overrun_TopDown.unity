@@ -947,7 +947,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9874d012a710004d9da919ce331848d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TopDownPlayerMovement
-  moveSpeed: 5
+  moveSpeed: 3
 --- !u!143 &917349044
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1163,6 +1163,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimation
   animator: {fileID: 1866135610}
+  animationDamping: 0.1
 --- !u!1 &1007026677
 GameObject:
   m_ObjectHideFlags: 0
