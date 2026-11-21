@@ -94,7 +94,7 @@ public class EnemyChase : MonoBehaviour
             float cross = Vector3.Cross(desired, away).y;
             avoidanceSide = Mathf.Abs(cross) > 0.01f
                 ? Mathf.Sign(cross)
-                : (GetInstanceID() % 2 == 0 ? 1f : -1f);
+                : (transform.position.x + transform.position.z >= 0f ? 1f : -1f);
         }
 
         // Tangential movement around the clearance circle, plus an outward push.
