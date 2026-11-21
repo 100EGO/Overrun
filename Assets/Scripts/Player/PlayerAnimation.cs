@@ -7,12 +7,14 @@ public class PlayerAnimation : MonoBehaviour
     [SerializeField, Min(0f)] private float animationDamping = 0.1f;
 
     private CharacterController controller;
+    private bool isDead;
     private static readonly int SpeedHash = Animator.StringToHash("Speed");
     private static readonly int MoveXHash = Animator.StringToHash("MoveX");
     private static readonly int MoveYHash = Animator.StringToHash("MoveY");
     private static readonly int ShootHash = Animator.StringToHash("Shoot");
     private static readonly int AutoFireHash = Animator.StringToHash("AutoFire");
     private static readonly int ReloadingHash = Animator.StringToHash("Reloading");
+    private static readonly int DieHash = Animator.StringToHash("Die");
 
     private void Awake()
     {
@@ -25,19 +27,19 @@ public class PlayerAnimation : MonoBehaviour
 
     public void PlayShoot()
     {
-        if (animator != null)
+        if (!isDead && animator != null)
             animator.SetTrigger(ShootHash);
     }
 
     public void SetAutoFire(bool active)
     {
-        if (animator != null)
+        if (!isDead && animator != null)
             animator.SetBool(AutoFireHash, active);
     }
 
     public void SetReloading(bool active)
     {
-        if (animator == null)
+        if (isDead || animator == null)
             return;
 
         if (active)
@@ -45,13 +47,35 @@ public class PlayerAnimation : MonoBehaviour
             animator.SetBool(AutoFireHash, false);
             animator.ResetTrigger(ShootHash);
         }
-
         animator.SetBool(ReloadingHash, active);
+    }
+
+    public void PlayDeath()
+    {
+        if (isDead)
+            return;
+
+        isDead = true;
+        if (animator == null)
+            return;
+
+        animator.SetBool(AutoFireHash, false);
+        animator.SetBool(ReloadingHash, false);
+        animator.ResetTrigger(ShootHash);
+        animator.SetFloat(SpeedHash, 0f);
+        animator.SetFloat(MoveXHash, 0f);
+        animator.SetFloat(MoveYHash, 0f);
+
+        int upperBodyLayer = animator.GetLayerIndex("UpperBody");
+        if (upperBodyLayer >= 0)
+            animator.SetLayerWeight(upperBodyLayer, 0f);
+
+        animator.SetTrigger(DieHash);
     }
 
     private void LateUpdate()
     {
-        if (animator == null)
+        if (animator == null || isDead)
             return;
 
         Vector3 velocity = controller.velocity;
