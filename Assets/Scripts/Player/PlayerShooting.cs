@@ -8,27 +8,52 @@ public class PlayerShooting : MonoBehaviour
     [SerializeField, Min(0f)] private float damage = 25f;
     [SerializeField] private float shotHeight = 0.5f;
     [SerializeField, Min(0f)] private float heldFireAnimationDelay = 0.3f;
+    [SerializeField, Min(1)] private int magazineSize = 30;
+    [SerializeField, Min(0.1f)] private float reloadDuration = 2f;
 
     private PlayerAnimation playerAnimation;
+    private int ammoInMagazine;
+    private bool isReloading;
+    private float reloadEndTime;
     private float nextShotTime;
     private float buttonPressedTime;
     private bool wasFireHeld;
 
+    public int AmmoInMagazine => ammoInMagazine;
+    public int MagazineSize => magazineSize;
+    public bool IsReloading => isReloading;
+
     private void Awake()
     {
         playerAnimation = GetComponent<PlayerAnimation>();
+        ammoInMagazine = magazineSize;
     }
 
     private void Update()
     {
-        bool fireHeld = Mouse.current != null && Mouse.current.leftButton.isPressed;
+        if (isReloading && Time.time >= reloadEndTime)
+            FinishReload();
 
+        if (Keyboard.current != null && Keyboard.current.rKey.wasPressedThisFrame)
+            StartReload();
+
+        if (isReloading)
+        {
+            StopFireAnimation();
+            return;
+        }
+
+        bool fireHeld = Mouse.current != null && Mouse.current.leftButton.isPressed;
         if (!fireHeld)
         {
-            if (wasFireHeld)
-                playerAnimation?.SetAutoFire(false);
+            StopFireAnimation();
+            return;
+        }
 
-            wasFireHeld = false;
+        if (ammoInMagazine <= 0)
+        {
+            StartReload();
+            StopFireAnimation();
             return;
         }
 
@@ -36,7 +61,6 @@ public class PlayerShooting : MonoBehaviour
         {
             buttonPressedTime = Time.time;
             playerAnimation?.SetAutoFire(false);
-            // Trigger the single-shot pose once per press, not once per bullet.
             playerAnimation?.PlayShoot();
         }
 
@@ -47,13 +71,45 @@ public class PlayerShooting : MonoBehaviour
             return;
 
         Shoot();
+        ammoInMagazine--;
         nextShotTime = Time.time + 1f / shotsPerSecond;
+
+        if (ammoInMagazine == 0)
+            StartReload();
+    }
+
+    private void StartReload()
+    {
+        if (isReloading || ammoInMagazine >= magazineSize)
+            return;
+
+        isReloading = true;
+        reloadEndTime = Time.time + reloadDuration;
+        StopFireAnimation();
+        playerAnimation?.SetReloading(true);
+        Debug.Log("Reloading...", this);
+    }
+
+    private void FinishReload()
+    {
+        ammoInMagazine = magazineSize;
+        isReloading = false;
+        playerAnimation?.SetReloading(false);
+        Debug.Log("Reload complete.", this);
+    }
+
+    private void StopFireAnimation()
+    {
+        if (wasFireHeld)
+            playerAnimation?.SetAutoFire(false);
+        wasFireHeld = false;
     }
 
     private void OnDisable()
     {
-        wasFireHeld = false;
-        playerAnimation?.SetAutoFire(false);
+        isReloading = false;
+        StopFireAnimation();
+        playerAnimation?.SetReloading(false);
     }
 
     private void Shoot()
@@ -66,7 +122,6 @@ public class PlayerShooting : MonoBehaviour
         if (Physics.Raycast(origin, direction, out RaycastHit hit, range))
         {
             Debug.Log("Shot hit: " + hit.collider.name, hit.collider);
-
             if (hit.collider.GetComponentInParent<EnemyHealth>() is EnemyHealth enemyHealth)
                 enemyHealth.TakeDamage(damage);
         }

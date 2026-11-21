@@ -12,14 +12,13 @@ public class PlayerAnimation : MonoBehaviour
     private static readonly int MoveYHash = Animator.StringToHash("MoveY");
     private static readonly int ShootHash = Animator.StringToHash("Shoot");
     private static readonly int AutoFireHash = Animator.StringToHash("AutoFire");
+    private static readonly int ReloadingHash = Animator.StringToHash("Reloading");
 
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
-
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
-
         if (animator == null)
             Debug.LogWarning("PlayerAnimation: no Animator found on the player or its children.", this);
     }
@@ -34,6 +33,20 @@ public class PlayerAnimation : MonoBehaviour
     {
         if (animator != null)
             animator.SetBool(AutoFireHash, active);
+    }
+
+    public void SetReloading(bool active)
+    {
+        if (animator == null)
+            return;
+
+        if (active)
+        {
+            animator.SetBool(AutoFireHash, false);
+            animator.ResetTrigger(ShootHash);
+        }
+
+        animator.SetBool(ReloadingHash, active);
     }
 
     private void LateUpdate()
