@@ -10,6 +10,7 @@ public class PlayerAnimation : MonoBehaviour
     private static readonly int SpeedHash = Animator.StringToHash("Speed");
     private static readonly int MoveXHash = Animator.StringToHash("MoveX");
     private static readonly int MoveYHash = Animator.StringToHash("MoveY");
+    private static readonly int ShootHash = Animator.StringToHash("Shoot");
 
     private void Awake()
     {
@@ -22,6 +23,12 @@ public class PlayerAnimation : MonoBehaviour
             Debug.LogWarning("PlayerAnimation: no Animator found on the player or its children.", this);
     }
 
+    public void PlayShoot()
+    {
+        if (animator != null)
+            animator.SetTrigger(ShootHash);
+    }
+
     private void LateUpdate()
     {
         if (animator == null)
@@ -31,8 +38,6 @@ public class PlayerAnimation : MonoBehaviour
         velocity.y = 0f;
 
         float speed = velocity.sqrMagnitude > 0.01f ? 1f : 0f;
-
-        // Convert world-space movement to directions relative to mouse-facing orientation.
         Vector3 localMovement = transform.InverseTransformDirection(velocity);
         localMovement.y = 0f;
         localMovement = localMovement.sqrMagnitude > 0.01f ? localMovement.normalized : Vector3.zero;
