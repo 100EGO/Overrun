@@ -7,9 +7,12 @@ public class PlayerShooting : MonoBehaviour
     [SerializeField, Min(0.1f)] private float shotsPerSecond = 4f;
     [SerializeField, Min(0f)] private float damage = 25f;
     [SerializeField] private float shotHeight = 0.5f;
+    [SerializeField, Min(0f)] private float heldFireAnimationDelay = 0.3f;
 
     private PlayerAnimation playerAnimation;
     private float nextShotTime;
+    private float buttonPressedTime;
+    private bool wasFireHeld;
 
     private void Awake()
     {
@@ -18,8 +21,27 @@ public class PlayerShooting : MonoBehaviour
 
     private void Update()
     {
-        if (Mouse.current == null || !Mouse.current.leftButton.isPressed)
+        bool fireHeld = Mouse.current != null && Mouse.current.leftButton.isPressed;
+
+        if (!fireHeld)
+        {
+            if (wasFireHeld)
+                playerAnimation?.SetAutoFire(false);
+
+            wasFireHeld = false;
             return;
+        }
+
+        if (!wasFireHeld)
+        {
+            buttonPressedTime = Time.time;
+            playerAnimation?.SetAutoFire(false);
+            // Trigger the single-shot pose once per press, not once per bullet.
+            playerAnimation?.PlayShoot();
+        }
+
+        wasFireHeld = true;
+        playerAnimation?.SetAutoFire(Time.time - buttonPressedTime >= heldFireAnimationDelay);
 
         if (Time.time < nextShotTime)
             return;
@@ -28,10 +50,14 @@ public class PlayerShooting : MonoBehaviour
         nextShotTime = Time.time + 1f / shotsPerSecond;
     }
 
+    private void OnDisable()
+    {
+        wasFireHeld = false;
+        playerAnimation?.SetAutoFire(false);
+    }
+
     private void Shoot()
     {
-        playerAnimation?.PlayShoot();
-
         Vector3 origin = transform.position + Vector3.up * shotHeight;
         Vector3 direction = transform.forward;
 

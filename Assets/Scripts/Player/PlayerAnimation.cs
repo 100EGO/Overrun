@@ -11,6 +11,7 @@ public class PlayerAnimation : MonoBehaviour
     private static readonly int MoveXHash = Animator.StringToHash("MoveX");
     private static readonly int MoveYHash = Animator.StringToHash("MoveY");
     private static readonly int ShootHash = Animator.StringToHash("Shoot");
+    private static readonly int AutoFireHash = Animator.StringToHash("AutoFire");
 
     private void Awake()
     {
@@ -27,6 +28,12 @@ public class PlayerAnimation : MonoBehaviour
     {
         if (animator != null)
             animator.SetTrigger(ShootHash);
+    }
+
+    public void SetAutoFire(bool active)
+    {
+        if (animator != null)
+            animator.SetBool(AutoFireHash, active);
     }
 
     private void LateUpdate()
