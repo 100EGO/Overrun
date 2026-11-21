@@ -910,6 +910,7 @@ GameObject:
   - component: {fileID: 917349048}
   - component: {fileID: 917349047}
   - component: {fileID: 917349049}
+  - component: {fileID: 917349050}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1149,6 +1150,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   maxHealth: 100
+--- !u!114 &917349050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 917349041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7a4e7c230914dbda85d9df5d83cb17a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimation
+  animator: {fileID: 1866135610}
 --- !u!1 &1007026677
 GameObject:
   m_ObjectHideFlags: 0
@@ -1678,6 +1692,11 @@ Transform:
   - {fileID: 335739801}
   m_Father: {fileID: 917349042}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &1866135610 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 7673487250857332701, guid: c98043d57e0190845b790d7b92990bee, type: 3}
+  m_PrefabInstance: {fileID: 476667316}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1866135611 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7673487251499544664, guid: c98043d57e0190845b790d7b92990bee, type: 3}
