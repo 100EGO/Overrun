@@ -8,6 +8,10 @@ public class PlayerShooting : MonoBehaviour
     [SerializeField, Min(0f)] private float damage = 25f;
     [SerializeField] private float shotHeight = 0.5f;
     [SerializeField] private Transform muzzlePoint;
+    [Header("Projectile")]
+    [SerializeField] private CombatProjectile projectilePrefab;
+    [SerializeField, Min(0.1f)] private float projectileSpeed = 35f;
+    [Header("Reload / Animation")]
     [SerializeField, Min(0f)] private float heldFireAnimationDelay = 0.3f;
     [SerializeField, Min(1)] private int magazineSize = 30;
     [SerializeField, Min(0.1f)] private float reloadDuration = 2f;
@@ -72,6 +76,12 @@ public class PlayerShooting : MonoBehaviour
         if (Time.time < nextShotTime)
             return;
 
+        if (projectilePrefab == null)
+        {
+            Debug.LogWarning("PlayerShooting: assign a CombatProjectile prefab in the Inspector.", this);
+            return;
+        }
+
         Shoot();
         ammoInMagazine--;
         nextShotTime = Time.time + 1f / shotsPerSecond;
@@ -97,7 +107,7 @@ public class PlayerShooting : MonoBehaviour
         ammoInMagazine = magazineSize;
         isReloading = false;
         playerAnimation?.SetReloading(false);
-        Debug.Log("Reload complete.", this);
+        Debug.Log("Reload complete.");
     }
 
     private void StopFireAnimation()
@@ -121,30 +131,8 @@ public class PlayerShooting : MonoBehaviour
             : transform.position + Vector3.up * shotHeight;
         Vector3 direction = transform.forward;
 
-        Debug.DrawRay(origin, direction * range, Color.yellow, 0.25f);
-
-        // Find the nearest hit that is not part of the player.
-        RaycastHit[] hits = Physics.RaycastAll(origin, direction, range, ~0, QueryTriggerInteraction.Ignore);
-        float closestDistance = range;
-        Collider closestCollider = null;
-
-        foreach (RaycastHit hit in hits)
-        {
-            if (hit.collider.transform == transform || hit.collider.transform.IsChildOf(transform))
-                continue;
-
-            if (hit.distance < closestDistance)
-            {
-                closestDistance = hit.distance;
-                closestCollider = hit.collider;
-            }
-        }
-
-        if (closestCollider != null)
-        {
-            Debug.Log("Shot hit: " + closestCollider.name, closestCollider);
-            if (closestCollider.GetComponentInParent<EnemyHealth>() is EnemyHealth enemyHealth)
-                enemyHealth.TakeDamage(damage);
-        }
+        CombatProjectile projectile = Instantiate(projectilePrefab, origin,
+            Quaternion.LookRotation(direction));
+        projectile.Initialize(direction, projectileSpeed, damage, range, transform.root);
     }
 }
