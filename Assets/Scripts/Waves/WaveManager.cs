@@ -33,6 +33,19 @@ public class WaveManager : MonoBehaviour
 
     private readonly List<EnemyHealth> activeEnemies = new List<EnemyHealth>();
 
+    public bool IsComplete { get; private set; }
+    public bool IsStopped { get; private set; }
+
+    public void StopWaves()
+    {
+        if (IsStopped || IsComplete)
+            return;
+
+        IsStopped = true;
+        StopAllCoroutines();
+        Debug.Log("Waves stopped: mission failed.", this);
+    }
+
     private IEnumerator Start()
     {
         if (spawnPoints == null || spawnPoints.Length == 0 ||
@@ -76,7 +89,11 @@ public class WaveManager : MonoBehaviour
             }
         }
 
-        Debug.Log("All waves cleared! Mission complete.", this);
+        if (!IsStopped)
+        {
+            IsComplete = true;
+            Debug.Log("All waves cleared!", this);
+        }
     }
 
     private IEnumerator SpawnEnemies(GameObject prefab, int count)
