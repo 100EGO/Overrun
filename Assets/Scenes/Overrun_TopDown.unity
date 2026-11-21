@@ -416,7 +416,7 @@ Transform:
   m_GameObject: {fileID: 157945715}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10.29, y: 0, z: -11.99}
+  m_LocalPosition: {x: 10.29, y: 1, z: -11.99}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1498,17 +1498,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WaveManager
   trackerPrefab: {fileID: 6432149103353938793, guid: 3a63cf6034400724289a808c995e133e, type: 3}
   demolisherPrefab: {fileID: 3899588684712084832, guid: af20eb40b6d4cc447ab2b6eecd745c66, type: 3}
+  turretHunterPrefab: {fileID: 6432149103353938793, guid: 2f3890c8ce3e1bb4c919693de49920a5, type: 3}
   spawnPoints:
   - {fileID: 1401837252}
   - {fileID: 1007026678}
   - {fileID: 157945716}
   waves:
   - trackers: 3
-    demolishers: 0
-  - trackers: 4
-    demolishers: 1
-  - trackers: 5
     demolishers: 2
+    turretHunters: 4
+  - trackers: 3
+    demolishers: 5
+    turretHunters: 3
+  - trackers: 5
+    demolishers: 5
+    turretHunters: 5
   initialPreparationSeconds: 0
   preparationSeconds: 2
   spawnIntervalSeconds: 0.75
@@ -2750,7 +2754,7 @@ Transform:
   m_GameObject: {fileID: 1007026677}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 21.32, y: 0, z: -11.99}
+  m_LocalPosition: {x: 21.32, y: 1, z: -11.99}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3319,7 +3323,7 @@ Transform:
   m_GameObject: {fileID: 1401837251}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 29.32, y: 0, z: -17.23}
+  m_LocalPosition: {x: 29.32, y: 1, z: -17.23}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3427,7 +3431,7 @@ MonoBehaviour:
   projectilePrefab: {fileID: 2906821614828089645, guid: c25897176a45af944be7ea72ac7425a1, type: 3}
   projectileSpeed: 25
   shotsPerSecond: 2
-  damage: 0
+  damage: 25
   aimToleranceDegrees: 5
 --- !u!114 &1427205724
 MonoBehaviour:
