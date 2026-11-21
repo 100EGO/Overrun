@@ -7,6 +7,7 @@ public class PlayerShooting : MonoBehaviour
     [SerializeField, Min(0.1f)] private float shotsPerSecond = 4f;
     [SerializeField, Min(0f)] private float damage = 25f;
     [SerializeField] private float shotHeight = 0.5f;
+    [SerializeField] private Transform muzzlePoint;
     [SerializeField, Min(0f)] private float heldFireAnimationDelay = 0.3f;
     [SerializeField, Min(1)] private int magazineSize = 30;
     [SerializeField, Min(0.1f)] private float reloadDuration = 2f;
