@@ -23,6 +23,7 @@ public class PlayerShooting : MonoBehaviour
     public int AmmoInMagazine => ammoInMagazine;
     public int MagazineSize => magazineSize;
     public bool IsReloading => isReloading;
+    public Transform MuzzlePoint => muzzlePoint;
 
     private void Awake()
     {
@@ -122,10 +123,27 @@ public class PlayerShooting : MonoBehaviour
 
         Debug.DrawRay(origin, direction * range, Color.yellow, 0.25f);
 
-        if (Physics.Raycast(origin, direction, out RaycastHit hit, range))
+        // Find the nearest hit that is not part of the player.
+        RaycastHit[] hits = Physics.RaycastAll(origin, direction, range, ~0, QueryTriggerInteraction.Ignore);
+        float closestDistance = range;
+        Collider closestCollider = null;
+
+        foreach (RaycastHit hit in hits)
         {
-            Debug.Log("Shot hit: " + hit.collider.name, hit.collider);
-            if (hit.collider.GetComponentInParent<EnemyHealth>() is EnemyHealth enemyHealth)
+            if (hit.collider.transform == transform || hit.collider.transform.IsChildOf(transform))
+                continue;
+
+            if (hit.distance < closestDistance)
+            {
+                closestDistance = hit.distance;
+                closestCollider = hit.collider;
+            }
+        }
+
+        if (closestCollider != null)
+        {
+            Debug.Log("Shot hit: " + closestCollider.name, closestCollider);
+            if (closestCollider.GetComponentInParent<EnemyHealth>() is EnemyHealth enemyHealth)
                 enemyHealth.TakeDamage(damage);
         }
     }
