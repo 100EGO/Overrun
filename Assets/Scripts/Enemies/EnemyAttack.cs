@@ -10,52 +10,38 @@ public class EnemyAttack : MonoBehaviour
     private EnemyTargeting targeting;
     private float nextAttackTime;
 
-    private void Awake()
-    {
-        targeting = GetComponent<EnemyTargeting>();
-    }
+    private void Awake() => targeting = GetComponent<EnemyTargeting>();
 
     private void Update()
     {
         Transform target = targeting.Target;
-        if (target == null || Time.time < nextAttackTime)
-            return;
-
-        float distanceSqr = GetHorizontalDistanceSqr(target);
-        if (distanceSqr > attackRange * attackRange)
-            return;
-
+        if (target == null || Time.time < nextAttackTime) return;
+        if (GetHorizontalDistanceSqr(target) > attackRange * attackRange) return;
         targeting.DealDamage(damage);
         nextAttackTime = Time.time + 1f / attacksPerSecond;
     }
 
     private float GetHorizontalDistanceSqr(Transform target)
     {
-        // Buildings can be much larger than their attack range.
-        // Measure from the enemy to the nearest collider surface, not the building center.
-        if (target.TryGetComponent<BuildingHealth>(out _))
+        // Buildings and turrets may have colliders extending far from their root pivot.
+        if (target.GetComponent<BuildingHealth>() != null ||
+            target.GetComponent<TurretHealth>() != null)
         {
             Collider[] colliders = target.GetComponentsInChildren<Collider>();
-            float nearestDistanceSqr = float.PositiveInfinity;
-
+            float nearest = float.PositiveInfinity;
             foreach (Collider collider in colliders)
             {
-                if (!collider.enabled || collider.isTrigger)
-                    continue;
-
-                Vector3 nearestPoint = collider.ClosestPoint(transform.position);
-                Vector3 toSurface = nearestPoint - transform.position;
-                toSurface.y = 0f;
-                nearestDistanceSqr = Mathf.Min(nearestDistanceSqr, toSurface.sqrMagnitude);
+                if (!collider.enabled || collider.isTrigger) continue;
+                Vector3 point = collider.ClosestPoint(transform.position);
+                Vector3 offset = point - transform.position;
+                offset.y = 0f;
+                nearest = Mathf.Min(nearest, offset.sqrMagnitude);
             }
-
-            if (!float.IsPositiveInfinity(nearestDistanceSqr))
-                return nearestDistanceSqr;
+            if (!float.IsPositiveInfinity(nearest)) return nearest;
         }
 
-        // Preserve the existing player attack behavior (and fallback for missing colliders).
-        Vector3 offset = target.position - transform.position;
-        offset.y = 0f;
-        return offset.sqrMagnitude;
+        Vector3 delta = target.position - transform.position;
+        delta.y = 0f;
+        return delta.sqrMagnitude;
     }
 }
