@@ -109,7 +109,11 @@ MonoBehaviour:
   amount: 1
   pickupRadius: 1
   player: {fileID: 0}
-  lifetimeSeconds: 5
+  attractionRadius: 3
+  attractionStartSpeed: 4
+  attractionAcceleration: 50
+  targetHeight: 1
+  lifetimeSeconds: 15
 --- !u!65 &-855210326881622346
 BoxCollider:
   m_ObjectHideFlags: 0
