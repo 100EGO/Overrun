@@ -51,7 +51,7 @@ public class PlayerShooting : MonoBehaviour
             return;
         }
 
-        if (turretPlacement != null && turretPlacement.IsPlacing)
+        if (turretPlacement != null && turretPlacement.BlocksShooting)
         {
             StopFireAnimation();
             return;
