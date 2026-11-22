@@ -15,10 +15,8 @@ public class TurretPlacement : MonoBehaviour
     [SerializeField, Min(0f)] private float minimumPlayerDistance = 1.5f;
     [SerializeField, Min(0.1f)] private float footprintRadius = 0.9f;
     [SerializeField, Min(0f)] private float groundOffset = 0f;
-    [SerializeField] private Key activationKey = Key.T;
-
-    [Header("Cooldown")]
-    [SerializeField, Min(0f)] private float placementCooldown = 10f;
+    [SerializeField] private Key activationKey = Key.E;
+    [SerializeField] private PlayerAbilities abilities;
 
     [Header("Preview colors")]
     [SerializeField] private Color validColor = new Color(0.2f, 1f, 0.5f, 0.45f);
@@ -30,18 +28,16 @@ public class TurretPlacement : MonoBehaviour
     private bool validPlacement;
     private Vector3 placementPosition;
     private bool placing;
-    private float nextPlacementTime;
 
     public bool IsPlacing => placing;
-    public float CooldownRemaining => Mathf.Max(0f, nextPlacementTime - Time.time);
-    public float PlacementCooldown => placementCooldown;
-    public bool CanPlaceTurret => CooldownRemaining <= 0f;
+    public bool CanPlaceTurret => abilities != null && abilities.IsTurretReady;
     public bool BlocksShooting => placing || Time.frameCount == lastPlacementFrame;
     private int lastPlacementFrame = -1;
 
     private void Awake()
     {
         if (placementCamera == null) placementCamera = Camera.main;
+        if (abilities == null) abilities = FindFirstObjectByType<PlayerAbilities>();
         propertyBlock = new MaterialPropertyBlock();
     }
 
@@ -64,10 +60,9 @@ public class TurretPlacement : MonoBehaviour
         }
 
         UpdatePreview();
-        if (validPlacement && mouse != null && mouse.leftButton.wasPressedThisFrame)
+        if (validPlacement && mouse != null && mouse.leftButton.wasPressedThisFrame && abilities != null && abilities.TryConsumeTurretAbility())
         {
             Instantiate(turretPrefab, placementPosition, turretPrefab.transform.rotation);
-            nextPlacementTime = Time.time + placementCooldown;
             lastPlacementFrame = Time.frameCount;
             CancelPlacement();
         }
@@ -77,7 +72,7 @@ public class TurretPlacement : MonoBehaviour
     {
         if (!CanPlaceTurret)
         {
-            Debug.Log($"Turret construction available in {CooldownRemaining:F1}s.", this);
+            Debug.Log("Turret ability E is on cooldown or PlayerAbilities is not assigned.", this);
             return;
         }
 
