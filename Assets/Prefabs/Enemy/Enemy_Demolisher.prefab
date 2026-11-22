@@ -8,6 +8,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 184965369498375585, guid: 3a63cf6034400724289a808c995e133e, type: 3}
+      propertyPath: dropOffset.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 184965369498375585, guid: 3a63cf6034400724289a808c995e133e, type: 3}
+      propertyPath: pickupPrefab
+      value: 
+      objectReference: {fileID: -363517629531916234, guid: 735608e0c16d24141bc16beda45de8fd, type: 3}
+    - target: {fileID: 184965369498375585, guid: 3a63cf6034400724289a808c995e133e, type: 3}
+      propertyPath: resourceType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1401395820798690442, guid: 3a63cf6034400724289a808c995e133e, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: acd6c50c556740749ae15ac5bcf8beb2, type: 2}
     - target: {fileID: 4315337661647497601, guid: 3a63cf6034400724289a808c995e133e, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
