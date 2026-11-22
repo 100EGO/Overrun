@@ -8,9 +8,7 @@ public class PlayerAnimation : MonoBehaviour
 
     private CharacterController controller;
     private TopDownPlayerMovement movement;
-    private bool wasSprinting;
     private bool isDead;
-    private static readonly int SprintHash = Animator.StringToHash("sprint");
     private static readonly int SprintActiveHash = Animator.StringToHash("SprintActive");
     private static readonly int SpeedHash = Animator.StringToHash("Speed");
     private static readonly int MoveXHash = Animator.StringToHash("MoveX");
@@ -67,7 +65,6 @@ public class PlayerAnimation : MonoBehaviour
         animator.SetBool(AutoFireHash, false);
         animator.SetBool(ReloadingHash, false);
         animator.ResetTrigger(ShootHash);
-        animator.ResetTrigger(SprintHash);
         animator.SetBool(SprintActiveHash, false);
         animator.SetFloat(SpeedHash, 0f);
         animator.SetFloat(MoveXHash, 0f);
@@ -86,12 +83,7 @@ public class PlayerAnimation : MonoBehaviour
             return;
 
         bool sprinting = movement != null && movement.IsSprinting;
-        if (sprinting && !wasSprinting)
-            animator.SetTrigger(SprintHash);
-        else if (!sprinting && wasSprinting)
-            animator.ResetTrigger(SprintHash);
         animator.SetBool(SprintActiveHash, sprinting);
-        wasSprinting = sprinting;
 
         Vector3 velocity = controller.velocity;
         velocity.y = 0f;
