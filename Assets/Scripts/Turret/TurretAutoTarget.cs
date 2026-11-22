@@ -87,7 +87,7 @@ public class TurretAutoTarget : MonoBehaviour
         target = null;
         float bestDistanceSquared = detectionRange * detectionRange;
 
-        foreach (EnemyHealth enemy in FindObjectsByType<EnemyHealth>(FindObjectsSortMode.None))
+        foreach (EnemyHealth enemy in FindObjectsByType<EnemyHealth>())
         {
             float distanceSquared = (enemy.transform.position - transform.position).sqrMagnitude;
             if (distanceSquared < bestDistanceSquared)
