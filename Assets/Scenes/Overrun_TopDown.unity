@@ -2155,7 +2155,8 @@ MonoBehaviour:
   minimumPlayerDistance: 1.5
   footprintRadius: 2
   groundOffset: 0
-  activationKey: 31
+  activationKey: 19
+  abilities: {fileID: 760342771}
   validColor: {r: 0.2, g: 1, b: 0.5, a: 0.45}
   invalidColor: {r: 1, g: 0.2, b: 0.2, a: 0.45}
 --- !u!1 &925605924
