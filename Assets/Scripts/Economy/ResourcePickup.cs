@@ -41,7 +41,7 @@ public class ResourcePickup : MonoBehaviour
     {
         if (player == null)
         {
-            PlayerHealth health = FindFirstObjectByType<PlayerHealth>();
+            PlayerHealth health = FindAnyObjectByType<PlayerHealth>();
             if (health != null) player = health.transform;
         }
     }
