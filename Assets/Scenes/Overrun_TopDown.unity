@@ -1271,15 +1271,15 @@ MonoBehaviour:
   - {fileID: 1007026678}
   - {fileID: 157945716}
   waves:
-  - trackers: 1
-    demolishers: 0
-    turretHunters: 0
-  - trackers: 0
-    demolishers: 0
-    turretHunters: 0
-  - trackers: 0
-    demolishers: 0
-    turretHunters: 0
+  - trackers: 3
+    demolishers: 3
+    turretHunters: 3
+  - trackers: 3
+    demolishers: 3
+    turretHunters: 3
+  - trackers: 3
+    demolishers: 3
+    turretHunters: 3
   initialPreparationSeconds: 0
   preparationSeconds: 2
   spawnIntervalSeconds: 0.75
@@ -1924,7 +1924,7 @@ MonoBehaviour:
   shotHeight: 0.5
   muzzlePoint: {fileID: 1770947609}
   projectilePrefab: {fileID: 2906821614828089645, guid: c25897176a45af944be7ea72ac7425a1, type: 3}
-  projectileSpeed: 70
+  projectileSpeed: 150
   heldFireAnimationDelay: 0.3
   magazineSize: 30
   reloadDuration: 2
