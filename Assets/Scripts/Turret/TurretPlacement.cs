@@ -37,7 +37,7 @@ public class TurretPlacement : MonoBehaviour
     private void Awake()
     {
         if (placementCamera == null) placementCamera = Camera.main;
-        if (abilities == null) abilities = FindFirstObjectByType<PlayerAbilities>();
+        if (abilities == null) abilities = FindAnyObjectByType<PlayerAbilities>();
         propertyBlock = new MaterialPropertyBlock();
     }
 
