@@ -21,7 +21,7 @@ public class WaveProgressUI : MonoBehaviour
     private void Start()
     {
         if (waveManager == null)
-            waveManager = FindFirstObjectByType<WaveManager>();
+            waveManager = FindAnyObjectByType<WaveManager>();
 
         Refresh();
     }
