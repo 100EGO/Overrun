@@ -109,6 +109,7 @@ MonoBehaviour:
   amount: 1
   pickupRadius: 1
   player: {fileID: 0}
+  lifetimeSeconds: 5
 --- !u!65 &-9051919028912028419
 BoxCollider:
   m_ObjectHideFlags: 0
