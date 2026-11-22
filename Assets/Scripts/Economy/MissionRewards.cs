@@ -8,12 +8,21 @@ public class MissionRewards : MonoBehaviour
     [SerializeField, Range(0f, 1f)] private float minimumTimeMultiplier = 0.75f;
     [SerializeField, Min(1f)] private float maximumTimeMultiplier = 1.25f;
 
+    public int BaseCredits => baseCredits;
+    public float LastHealthMultiplier { get; private set; } = 1f;
+    public float LastTimeMultiplier { get; private set; } = 1f;
     public int LastCreditsAwarded { get; private set; }
     public float ElapsedSeconds { get; private set; }
 
+    private MissionManager mission;
+
+    private void Awake()
+    {
+        mission = GetComponent<MissionManager>();
+    }
+
     private void Update()
     {
-        MissionManager mission = GetComponent<MissionManager>();
         if (mission != null && mission.State == MissionManager.MissionState.InProgress)
             ElapsedSeconds += Time.deltaTime;
     }
@@ -24,7 +33,9 @@ public class MissionRewards : MonoBehaviour
         float timeFactor = Mathf.Clamp(targetTimeSeconds / Mathf.Max(1f, ElapsedSeconds),
             Mathf.Min(minimumTimeMultiplier, maximumTimeMultiplier),
             Mathf.Max(minimumTimeMultiplier, maximumTimeMultiplier));
-        LastCreditsAwarded = Mathf.RoundToInt(baseCredits * (0.5f + 0.5f * healthRatio) * timeFactor);
+        LastHealthMultiplier = 0.5f + 0.5f * healthRatio;
+        LastTimeMultiplier = timeFactor;
+        LastCreditsAwarded = Mathf.RoundToInt(baseCredits * LastHealthMultiplier * LastTimeMultiplier);
         if (EconomyInventory.Instance != null)
             EconomyInventory.Instance.AddCredits(LastCreditsAwarded);
         return LastCreditsAwarded;
