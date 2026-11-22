@@ -1195,15 +1195,15 @@ MonoBehaviour:
   - {fileID: 1007026678}
   - {fileID: 157945716}
   waves:
-  - trackers: 3
-    demolishers: 2
-    turretHunters: 4
-  - trackers: 3
-    demolishers: 5
-    turretHunters: 3
-  - trackers: 5
-    demolishers: 5
-    turretHunters: 5
+  - trackers: 1
+    demolishers: 0
+    turretHunters: 0
+  - trackers: 0
+    demolishers: 0
+    turretHunters: 0
+  - trackers: 0
+    demolishers: 0
+    turretHunters: 0
   initialPreparationSeconds: 0
   preparationSeconds: 2
   spawnIntervalSeconds: 0.75
@@ -3850,6 +3850,7 @@ MonoBehaviour:
   playerHealth: {fileID: 917349049}
   buildingHealth: {fileID: 1388910358}
   waveManager: {fileID: 512076576}
+  resultsSceneName: MissionResults
 --- !u!114 &2120701886
 MonoBehaviour:
   m_ObjectHideFlags: 0
