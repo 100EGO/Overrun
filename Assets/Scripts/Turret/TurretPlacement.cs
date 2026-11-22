@@ -29,6 +29,8 @@ public class TurretPlacement : MonoBehaviour
     private bool placing;
 
     public bool IsPlacing => placing;
+    public bool BlocksShooting => placing || Time.frameCount == lastPlacementFrame;
+    private int lastPlacementFrame = -1;
 
     private void Awake()
     {
@@ -58,6 +60,7 @@ public class TurretPlacement : MonoBehaviour
         if (validPlacement && mouse != null && mouse.leftButton.wasPressedThisFrame)
         {
             Instantiate(turretPrefab, placementPosition, turretPrefab.transform.rotation);
+            lastPlacementFrame = Time.frameCount;
             CancelPlacement();
         }
     }
