@@ -68,6 +68,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy_Demolisher
       objectReference: {fileID: 0}
+    - target: {fileID: 6432149103353938793, guid: 3a63cf6034400724289a808c995e133e, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7936274193693370433, guid: 3a63cf6034400724289a808c995e133e, type: 3}
       propertyPath: targetType
       value: 1
@@ -75,6 +79,10 @@ PrefabInstance:
     - target: {fileID: 7936274193693370433, guid: 3a63cf6034400724289a808c995e133e, type: 3}
       propertyPath: prioritizeTurrets
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8242191555171750762, guid: 3a63cf6034400724289a808c995e133e, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

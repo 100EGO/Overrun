@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8467888026748865622}
   - component: {fileID: 8391720657696709742}
   - component: {fileID: 7936274193693370433}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Enemy_Tracker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 4797536989882591874}
   - component: {fileID: 1401395820798690442}
   - component: {fileID: 1741611509147181133}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: EnemyPlaceholder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
