@@ -18,6 +18,11 @@ public class PlayerAnimation : MonoBehaviour
     private static readonly int ReloadingHash = Animator.StringToHash("Reloading");
     private static readonly int DieHash = Animator.StringToHash("Die");
 
+    private void Start()
+    {
+        Debug.Log(Application.persistentDataPath + "je me trouve dans la methode Start du script PlayerAnimation");
+    }
+
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
