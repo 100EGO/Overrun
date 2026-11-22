@@ -33,6 +33,15 @@ public class PlayerAbilities : MonoBehaviour
     [SerializeField] private Color cooldownTint = new Color(0.45f, 0.45f, 0.45f, 1f);
     [SerializeField] private Color cooldownFillColor = Color.red;
 
+    public bool IsTurretReady => Time.time >= abilityE.readyAt;
+
+    public bool TryConsumeTurretAbility()
+    {
+        if (!IsTurretReady) return false;
+        TryActivate(abilityE, "E");
+        return true;
+    }
+
     private void Awake()
     {
         Initialize(abilityQ);
@@ -47,8 +56,6 @@ public class PlayerAbilities : MonoBehaviour
             if (keyboard.qKey.wasPressedThisFrame)
                 TryActivate(abilityQ, "Q");
 
-            if (keyboard.eKey.wasPressedThisFrame)
-                TryActivate(abilityE, "E");
         }
 
         Refresh(abilityQ);
