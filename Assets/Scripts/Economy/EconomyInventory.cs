@@ -105,7 +105,16 @@ public class EconomyInventory : MonoBehaviour
             string tempPath = path + ".tmp";
             File.WriteAllText(tempPath, JsonUtility.ToJson(data, true));
             // Replace the existing save only after the new JSON was written successfully.
-            File.Move(tempPath, path, true);
+            if (File.Exists(path))
+            {
+                // Unity's .NET profile does not support File.Move(source, dest, overwrite).
+                // Replace the existing save with the fully written temporary file.
+                File.Replace(tempPath, path, null);
+            }
+            else
+            {
+                File.Move(tempPath, path);
+            }
         }
         catch (Exception exception)
         {
