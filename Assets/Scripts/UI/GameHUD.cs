@@ -34,11 +34,11 @@ public class GameHUD : MonoBehaviour
 
     private void Start()
     {
-        if (playerHealth == null) playerHealth = FindFirstObjectByType<PlayerHealth>();
-        if (playerMovement == null) playerMovement = FindFirstObjectByType<TopDownPlayerMovement>();
-        if (buildingHealth == null) buildingHealth = FindFirstObjectByType<BuildingHealth>();
-        if (playerShooting == null) playerShooting = FindFirstObjectByType<PlayerShooting>();
-        if (waveManager == null) waveManager = FindFirstObjectByType<WaveManager>();
+        if (playerHealth == null) playerHealth = FindAnyObjectByType<PlayerHealth>();
+        if (playerMovement == null) playerMovement = FindAnyObjectByType<TopDownPlayerMovement>();
+        if (buildingHealth == null) buildingHealth = FindAnyObjectByType<BuildingHealth>();
+        if (playerShooting == null) playerShooting = FindAnyObjectByType<PlayerShooting>();
+        if (waveManager == null) waveManager = FindAnyObjectByType<WaveManager>();
     }
 
     private void Update()
