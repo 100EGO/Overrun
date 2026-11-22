@@ -20,6 +20,9 @@ public class EnemyHealth : MonoBehaviour
         Debug.Log($"{name}: {currentHealth}/{maxHealth} HP", this);
 
         if (currentHealth <= 0f)
+        {
+            if (TryGetComponent(out EnemyLootDrop loot)) loot.Drop();
             Destroy(gameObject);
+        }
     }
 }
