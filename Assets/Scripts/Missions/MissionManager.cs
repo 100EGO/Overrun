@@ -12,6 +12,11 @@ public class MissionManager : MonoBehaviour
 
     private void Start()
     {
+        if (EconomyInventory.Instance == null)
+            Debug.LogWarning("MissionManager: add an EconomyInventory object to the starting scene.", this);
+        else
+            EconomyInventory.Instance.BeginMission();
+
         if (playerHealth == null || buildingHealth == null || waveManager == null)
         {
             Debug.LogError("MissionManager: assign PlayerHealth, BuildingHealth and WaveManager.", this);
@@ -46,11 +51,15 @@ public class MissionManager : MonoBehaviour
         if (result == MissionState.Defeat)
         {
             waveManager.StopWaves();
+            if (EconomyInventory.Instance != null) EconomyInventory.Instance.LoseMission();
             Debug.Log($"MISSION FAILED: {reason}.", this);
         }
         else
         {
-            Debug.Log("MISSION COMPLETE: Victory!", this);
+            if (EconomyInventory.Instance != null) EconomyInventory.Instance.BankMission();
+            MissionRewards rewards = GetComponent<MissionRewards>();
+            int credits = rewards != null ? rewards.Award(buildingHealth.CurrentHealth, buildingHealth.MaxHealth) : 0;
+            Debug.Log($"MISSION COMPLETE: Victory! +{credits} credits.", this);
         }
     }
 }
