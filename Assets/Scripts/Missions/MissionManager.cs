@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MissionManager : MonoBehaviour
 {
@@ -6,6 +7,9 @@ public class MissionManager : MonoBehaviour
     [SerializeField] private PlayerHealth playerHealth;
     [SerializeField] private BuildingHealth buildingHealth;
     [SerializeField] private WaveManager waveManager;
+
+    [Header("Results scene")]
+    [SerializeField] private string resultsSceneName = "MissionResults";
 
     public enum MissionState { InProgress, Victory, Defeat }
     public MissionState State { get; private set; } = MissionState.InProgress;
@@ -48,6 +52,9 @@ public class MissionManager : MonoBehaviour
     {
         State = result;
 
+        MissionRewards rewards = GetComponent<MissionRewards>();
+        int credits = 0;
+
         if (result == MissionState.Defeat)
         {
             waveManager.StopWaves();
@@ -57,9 +64,16 @@ public class MissionManager : MonoBehaviour
         else
         {
             if (EconomyInventory.Instance != null) EconomyInventory.Instance.BankMission();
-            MissionRewards rewards = GetComponent<MissionRewards>();
-            int credits = rewards != null ? rewards.Award(buildingHealth.CurrentHealth, buildingHealth.MaxHealth) : 0;
+            credits = rewards != null ? rewards.Award(buildingHealth.CurrentHealth, buildingHealth.MaxHealth) : 0;
             Debug.Log($"MISSION COMPLETE: Victory! +{credits} credits.", this);
         }
+
+        float healthRatio = buildingHealth.MaxHealth > 0f
+            ? Mathf.Clamp01(buildingHealth.CurrentHealth / buildingHealth.MaxHealth) : 0f;
+        MissionResultData.Record(result == MissionState.Victory,
+            rewards != null ? rewards.ElapsedSeconds : 0f, healthRatio, rewards, credits);
+
+        if (!string.IsNullOrWhiteSpace(resultsSceneName))
+            SceneManager.LoadScene(resultsSceneName);
     }
 }
