@@ -8,6 +8,17 @@ public class ResourcePickup : MonoBehaviour
     [SerializeField, Min(0.1f)] private float pickupRadius = 1f;
     [SerializeField] private Transform player;
 
+    [Header("Lifetime")]
+    [Tooltip("Seconds before uncollected loot disappears. Set to 0 to keep it indefinitely.")]
+    [SerializeField, Min(0f)] private float lifetimeSeconds = 45f;
+
+    private float despawnAt;
+
+    private void Awake()
+    {
+        despawnAt = lifetimeSeconds > 0f ? Time.time + lifetimeSeconds : float.PositiveInfinity;
+    }
+
     public void Initialize(ResourceType type, int quantity)
     {
         resourceType = type;
@@ -25,6 +36,12 @@ public class ResourcePickup : MonoBehaviour
 
     private void Update()
     {
+        if (Time.time >= despawnAt)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         if (player == null || EconomyInventory.Instance == null) return;
         PlayerHealth health = player.GetComponent<PlayerHealth>();
         if (health != null && health.IsDead) return;
