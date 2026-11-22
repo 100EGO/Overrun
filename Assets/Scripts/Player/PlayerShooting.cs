@@ -17,6 +17,7 @@ public class PlayerShooting : MonoBehaviour
     [SerializeField, Min(0.1f)] private float reloadDuration = 2f;
 
     private PlayerAnimation playerAnimation;
+    private TurretPlacement turretPlacement;
     private int ammoInMagazine;
     private bool isReloading;
     private float reloadEndTime;
@@ -32,6 +33,7 @@ public class PlayerShooting : MonoBehaviour
     private void Awake()
     {
         playerAnimation = GetComponent<PlayerAnimation>();
+        turretPlacement = GetComponent<TurretPlacement>();
         ammoInMagazine = magazineSize;
     }
 
@@ -44,6 +46,12 @@ public class PlayerShooting : MonoBehaviour
             StartReload();
 
         if (isReloading)
+        {
+            StopFireAnimation();
+            return;
+        }
+
+        if (turretPlacement != null && turretPlacement.IsPlacing)
         {
             StopFireAnimation();
             return;
