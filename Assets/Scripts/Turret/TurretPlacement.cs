@@ -17,6 +17,9 @@ public class TurretPlacement : MonoBehaviour
     [SerializeField, Min(0f)] private float groundOffset = 0f;
     [SerializeField] private Key activationKey = Key.T;
 
+    [Header("Cooldown")]
+    [SerializeField, Min(0f)] private float placementCooldown = 10f;
+
     [Header("Preview colors")]
     [SerializeField] private Color validColor = new Color(0.2f, 1f, 0.5f, 0.45f);
     [SerializeField] private Color invalidColor = new Color(1f, 0.2f, 0.2f, 0.45f);
@@ -27,8 +30,12 @@ public class TurretPlacement : MonoBehaviour
     private bool validPlacement;
     private Vector3 placementPosition;
     private bool placing;
+    private float nextPlacementTime;
 
     public bool IsPlacing => placing;
+    public float CooldownRemaining => Mathf.Max(0f, nextPlacementTime - Time.time);
+    public float PlacementCooldown => placementCooldown;
+    public bool CanPlaceTurret => CooldownRemaining <= 0f;
     public bool BlocksShooting => placing || Time.frameCount == lastPlacementFrame;
     private int lastPlacementFrame = -1;
 
@@ -60,6 +67,7 @@ public class TurretPlacement : MonoBehaviour
         if (validPlacement && mouse != null && mouse.leftButton.wasPressedThisFrame)
         {
             Instantiate(turretPrefab, placementPosition, turretPrefab.transform.rotation);
+            nextPlacementTime = Time.time + placementCooldown;
             lastPlacementFrame = Time.frameCount;
             CancelPlacement();
         }
@@ -67,6 +75,12 @@ public class TurretPlacement : MonoBehaviour
 
     private void BeginPlacement()
     {
+        if (!CanPlaceTurret)
+        {
+            Debug.Log($"Turret construction available in {CooldownRemaining:F1}s.", this);
+            return;
+        }
+
         if (turretPrefab == null)
         {
             Debug.LogWarning("TurretPlacement: assign a Turret Prefab.", this);
