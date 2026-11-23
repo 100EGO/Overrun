@@ -15,6 +15,11 @@ public class MissionResultsUI : MonoBehaviour
     [SerializeField] private TMP_Text earnedCreditsText;
     [SerializeField] private TMP_Text totalCreditsText;
 
+    [Header("Navigation")]
+    [SerializeField] private string shopSceneName = "Shop_Menu";
+
+    public void ReturnToShop() => SceneLoader.LoadScene(shopSceneName);
+
     private void Start()
     {
         if (!MissionResultData.HasResult)
