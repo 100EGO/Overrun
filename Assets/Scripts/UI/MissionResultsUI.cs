@@ -18,7 +18,12 @@ public class MissionResultsUI : MonoBehaviour
     [Header("Navigation")]
     [SerializeField] private string shopSceneName = "Shop_Menu";
 
+    [SerializeField] private string mainMenuSceneName = "Main_Menu";
+    [SerializeField] private string contractsSceneName = "Contracts_Menu";
+
+    public void ReturnHome() => SceneLoader.LoadScene(mainMenuSceneName);
     public void ReturnToShop() => SceneLoader.LoadScene(shopSceneName);
+    public void ReturnToContracts() => SceneLoader.LoadScene(contractsSceneName);
 
     private void Start()
     {
