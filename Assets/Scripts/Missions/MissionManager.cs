@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class MissionManager : MonoBehaviour
 {
@@ -74,6 +73,6 @@ public class MissionManager : MonoBehaviour
             rewards != null ? rewards.ElapsedSeconds : 0f, healthRatio, rewards, credits);
 
         if (!string.IsNullOrWhiteSpace(resultsSceneName))
-            SceneManager.LoadScene(resultsSceneName);
+            SceneLoader.LoadScene(resultsSceneName);
     }
 }
