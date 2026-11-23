@@ -1,10 +1,9 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 /// <summary>Single entry point for player builds. Owns persistent services, not mission gameplay.</summary>
 public class GameBootstrap : MonoBehaviour
 {
-    [SerializeField] private string initialScene = "Shop_Menu";
+    [SerializeField] private string initialScene = "Main_Menu";
 
     private void Awake()
     {
