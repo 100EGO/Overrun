@@ -49,6 +49,11 @@ public class TopDownPlayerMovement : MonoBehaviour
         }
 
         Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
+        if (TryGetComponent(out ThirdPersonCameraRig rig) && rig.isActiveAndEnabled)
+        {
+            direction = (rig.Right * horizontal + rig.Forward * vertical).normalized;
+            if (rig.IsAiming) sprintHeld = false;
+        }
         if (exhausted && CurrentStamina >= Mathf.Min(maxStamina, sprintResumeThreshold))
             exhausted = false;
 
