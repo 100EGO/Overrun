@@ -96,8 +96,14 @@ public class ThirdPersonCameraRig : MonoBehaviour
 
     public Vector3 GetShotDirection(Vector3 origin, float range)
     {
+        Vector3 direction = GetAimPoint(origin, range) - origin;
+        return direction.sqrMagnitude > 0.0001f ? direction.normalized : Forward;
+    }
+
+    public Vector3 GetAimPoint(Vector3 origin, float range)
+    {
         Camera cam = Camera.main;
-        if (cam == null) return Forward;
+        if (cam == null) return origin + Forward * range;
         Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
         float distance = range + Vector3.Distance(cam.transform.position, origin);
         Vector3 target = ray.GetPoint(distance);
@@ -108,7 +114,6 @@ public class ThirdPersonCameraRig : MonoBehaviour
             nearest = hit.distance;
             target = hit.point;
         }
-        Vector3 direction = target - origin;
-        return direction.sqrMagnitude > 0.0001f ? direction.normalized : ray.direction;
+        return target;
     }
 }
