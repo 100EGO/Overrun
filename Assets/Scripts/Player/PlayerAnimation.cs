@@ -9,6 +9,8 @@ public class PlayerAnimation : MonoBehaviour
     private CharacterController controller;
     private TopDownPlayerMovement movement;
     private bool isDead;
+    private ThirdPersonCameraRig cameraRig;
+    private static readonly int AimingHash = Animator.StringToHash("Aiming");
     private static readonly int SprintActiveHash = Animator.StringToHash("SprintActive");
     private static readonly int SpeedHash = Animator.StringToHash("Speed");
     private static readonly int MoveXHash = Animator.StringToHash("MoveX");
@@ -27,6 +29,7 @@ public class PlayerAnimation : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
         movement = GetComponent<TopDownPlayerMovement>();
+        cameraRig = GetComponent<ThirdPersonCameraRig>();
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
         if (animator == null)
@@ -71,6 +74,7 @@ public class PlayerAnimation : MonoBehaviour
         animator.SetBool(ReloadingHash, false);
         animator.ResetTrigger(ShootHash);
         animator.SetBool(SprintActiveHash, false);
+        animator.SetBool(AimingHash, false);
         animator.SetFloat(SpeedHash, 0f);
         animator.SetFloat(MoveXHash, 0f);
         animator.SetFloat(MoveYHash, 0f);
@@ -89,6 +93,7 @@ public class PlayerAnimation : MonoBehaviour
 
         bool sprinting = movement != null && movement.IsSprinting;
         animator.SetBool(SprintActiveHash, sprinting);
+        animator.SetBool(AimingHash, cameraRig != null && cameraRig.isActiveAndEnabled && cameraRig.IsAiming);
 
         Vector3 velocity = controller.velocity;
         velocity.y = 0f;
