@@ -13,11 +13,17 @@ public class ThirdPersonCameraRig : MonoBehaviour
     [SerializeField] private float aimSensitivity = 0.07f;
     [SerializeField] private float minPitch = -35f;
     [SerializeField] private float maxPitch = 65f;
+    [Header("Character rotation")]
+    [SerializeField, Min(1f)] private float movementRotationSpeed = 720f;
+    [SerializeField, Min(1f)] private float combatRotationSpeed = 1080f;
     private float yaw;
     private float pitch = 10f;
     private PlayerHealth health;
     private TurretPlacement placement;
     public bool IsAiming { get; private set; }
+    public bool IsInCombat => IsAiming ||
+        (Mouse.current != null && Mouse.current.leftButton.isPressed &&
+         (placement == null || !placement.BlocksShooting));
     public Vector3 Forward => Quaternion.Euler(0f, yaw, 0f) * Vector3.forward;
     public Vector3 Right => Quaternion.Euler(0f, yaw, 0f) * Vector3.right;
 
@@ -52,8 +58,19 @@ public class ThirdPersonCameraRig : MonoBehaviour
         Vector2 delta = mouse.delta.ReadValue() * (aiming ? aimSensitivity : sensitivity);
         yaw += delta.x;
         pitch = Mathf.Clamp(pitch - delta.y, minPitch, maxPitch);
-        transform.rotation = Quaternion.Euler(0f, yaw, 0f);
         UpdateTarget();
+    }
+
+    public void RotateCharacter(Vector3 movementDirection)
+    {
+        if (health != null && health.IsDead) return;
+        bool combat = IsInCombat;
+        Vector3 direction = combat ? Forward : movementDirection;
+        direction.y = 0f;
+        if (direction.sqrMagnitude < 0.0001f) return;
+        Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation,
+            (combat ? combatRotationSpeed : movementRotationSpeed) * Time.deltaTime);
     }
 
     private void LateUpdate() => UpdateTarget();
