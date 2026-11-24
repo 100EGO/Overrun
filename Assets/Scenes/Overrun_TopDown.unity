@@ -1354,7 +1354,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7673487251499248760, guid: c98043d57e0190845b790d7b92990bee, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1866135612}
   m_SourcePrefab: {fileID: 100100000, guid: c98043d57e0190845b790d7b92990bee, type: 3}
 --- !u!1 &512076574
 GameObject:
@@ -2131,10 +2134,8 @@ GameObject:
   - component: {fileID: 917349042}
   - component: {fileID: 917349044}
   - component: {fileID: 917349043}
-  - component: {fileID: 917349045}
   - component: {fileID: 917349046}
   - component: {fileID: 917349048}
-  - component: {fileID: 917349047}
   - component: {fileID: 917349049}
   - component: {fileID: 917349050}
   - component: {fileID: 917349051}
@@ -2208,19 +2209,6 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
---- !u!114 &917349045
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 917349041}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c256520829a23d345a850d631434a206, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TopDownPlayerAim
-  aimCamera: {fileID: 330585545}
 --- !u!114 &917349046
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2243,22 +2231,6 @@ MonoBehaviour:
   heldFireAnimationDelay: 0.3
   magazineSize: 30
   reloadDuration: 2
---- !u!114 &917349047
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 917349041}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 22f0c176140239240b38fc863663b14a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerAimLaser
-  range: 20
-  shotHeight: 0.5
-  lineWidth: 0.035
-  opacity: 0.45
 --- !u!120 &917349048
 LineRenderer:
   serializedVersion: 3
@@ -4204,6 +4176,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1841766282 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7673487251499248760, guid: c98043d57e0190845b790d7b92990bee, type: 3}
+  m_PrefabInstance: {fileID: 476667316}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1842254762
 GameObject:
   m_ObjectHideFlags: 0
@@ -4365,6 +4342,22 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7673487251499544664, guid: c98043d57e0190845b790d7b92990bee, type: 3}
   m_PrefabInstance: {fileID: 476667316}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1866135612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1841766282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fff0960ef4ea6e04eac66b4a7fd2189d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Animation.Rigging::UnityEngine.Animations.Rigging.RigBuilder
+  m_RigLayers:
+  - m_Rig: {fileID: 0}
+    m_Active: 1
+  m_Effectors: []
 --- !u!1 &1923616164
 GameObject:
   m_ObjectHideFlags: 0
