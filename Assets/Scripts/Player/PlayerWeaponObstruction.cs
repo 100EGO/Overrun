@@ -4,35 +4,60 @@ using UnityEngine;
 public class PlayerWeaponObstruction : MonoBehaviour
 {
     [SerializeField] private LayerMask obstacleLayers;
-    [SerializeField] private float probeHeight = 1.3f;
-    [SerializeField, Min(0.1f)] private float probeDistance = 1.2f;
-    [SerializeField, Min(0.01f)] private float probeRadius = 0.15f;
-    [SerializeField] private float raisedPitch = -65f;
-    [SerializeField, Min(0.1f)] private float blendSpeed = 12f;
-    public float Amount { get; private set; }
-    public float RaisedPitch => raisedPitch;
+    [SerializeField] private BoxCollider weaponCollider;
+    [SerializeField, Min(0.001f)] private float contactMargin = 0.02f;
     public bool BlocksFire { get; private set; }
+
+    private bool Ready => weaponCollider != null && weaponCollider.enabled;
+
+    private void GetBox(out Vector3 center, out Vector3 half, out Quaternion rotation)
+    {
+        Transform t = weaponCollider.transform;
+        center = t.TransformPoint(weaponCollider.center);
+        Vector3 scale = t.lossyScale;
+        half = Vector3.Scale(weaponCollider.size * 0.5f,
+            new Vector3(Mathf.Abs(scale.x), Mathf.Abs(scale.y), Mathf.Abs(scale.z)));
+        rotation = t.rotation;
+    }
+
+    private bool IsObstacle(Collider c) => c != null && c.transform.root != transform.root;
 
     private void Update()
     {
-        Vector3 origin = transform.position + Vector3.up * probeHeight;
-        float nearest = probeDistance;
-        foreach (RaycastHit hit in Physics.SphereCastAll(origin, probeRadius, transform.forward,
-                     probeDistance, obstacleLayers, QueryTriggerInteraction.Ignore))
-        {
-            if (hit.collider.transform.root == transform.root) continue;
-            nearest = Mathf.Min(nearest, hit.distance);
-        }
-        foreach (Collider hit in Physics.OverlapSphere(origin, probeRadius, obstacleLayers, QueryTriggerInteraction.Ignore))
-            if (hit.transform.root != transform.root) nearest = 0f;
-        BlocksFire = nearest < probeDistance;
-        float target = BlocksFire ? Mathf.Clamp01(1f - nearest / probeDistance) : 0f;
-        Amount = Mathf.MoveTowards(Amount, target, blendSpeed * Time.deltaTime);
+        BlocksFire = false;
+        if (!Ready) return;
+        GetBox(out Vector3 center, out Vector3 half, out Quaternion rotation);
+        foreach (Collider c in Physics.OverlapBox(center, half + Vector3.one * contactMargin,
+                     rotation, obstacleLayers, QueryTriggerInteraction.Ignore))
+            if (IsObstacle(c)) { BlocksFire = true; break; }
     }
 
-    private void OnDisable()
+    public Vector3 ConstrainMovement(Vector3 displacement)
     {
-        Amount = 0f;
-        BlocksFire = false;
+        if (!Ready) return displacement;
+        Vector3 horizontal = new Vector3(displacement.x, 0f, displacement.z);
+        float length = horizontal.magnitude;
+        if (length < 0.00001f) return displacement;
+        GetBox(out Vector3 center, out Vector3 half, out Quaternion rotation);
+        Vector3 direction = horizontal / length;
+        float allowed = length;
+        foreach (RaycastHit hit in Physics.BoxCastAll(center, half, direction, rotation,
+                     length + contactMargin, obstacleLayers, QueryTriggerInteraction.Ignore))
+        {
+            if (!IsObstacle(hit.collider) || Vector3.Dot(direction, hit.normal) >= -0.001f) continue;
+            allowed = Mathf.Min(allowed, Mathf.Max(0f, hit.distance - contactMargin));
+        }
+        // Box casts may miss initial overlaps. Allow retreat, but not deeper penetration.
+        foreach (Collider c in Physics.OverlapBox(center, half, rotation, obstacleLayers, QueryTriggerInteraction.Ignore))
+        {
+            if (!IsObstacle(c)) continue;
+            if (Physics.ComputePenetration(weaponCollider, weaponCollider.transform.position,
+                    rotation, c, c.transform.position, c.transform.rotation,
+                    out Vector3 separation, out _) && Vector3.Dot(direction, separation) < -0.001f)
+                allowed = 0f;
+        }
+        return direction * allowed + Vector3.up * displacement.y;
     }
+
+    private void OnDisable() => BlocksFire = false;
 }
