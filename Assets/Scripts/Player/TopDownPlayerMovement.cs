@@ -10,6 +10,10 @@ public class TopDownPlayerMovement : MonoBehaviour
     [SerializeField, Min(0f)] private float gravity = 20f;
     [SerializeField] private float groundedVerticalSpeed = -2f;
 
+    [Header("Jump")]
+    [SerializeField, Min(0.1f)] private float jumpHeight = 1.2f;
+    public bool IsAirborne { get; private set; }
+
     [Header("Stamina")]
     [SerializeField, Min(1f)] private float maxStamina = 100f;
     [SerializeField, Min(0f)] private float sprintDrainPerSecond = 25f;
@@ -76,13 +80,21 @@ public class TopDownPlayerMovement : MonoBehaviour
             CurrentStamina = Mathf.Min(maxStamina, CurrentStamina + staminaRegenPerSecond * Time.deltaTime);
         }
 
-        if (controller.isGrounded && verticalSpeed < 0f)
+        if (controller.isGrounded && verticalSpeed <= 0f)
+        {
             verticalSpeed = groundedVerticalSpeed;
+            if (keyboard != null && keyboard.spaceKey.wasPressedThisFrame)
+                verticalSpeed = Mathf.Sqrt(2f * Mathf.Max(0.01f, gravity) * jumpHeight);
+        }
         else
             verticalSpeed -= gravity * Time.deltaTime;
 
         Vector3 velocity = direction * (IsSprinting ? sprintSpeed : moveSpeed) + Vector3.up * verticalSpeed;
         CollisionFlags flags = controller.Move(velocity * Time.deltaTime);
+
+        IsAirborne = (flags & CollisionFlags.Below) == 0;
+        if ((flags & CollisionFlags.Above) != 0 && verticalSpeed > 0f)
+            verticalSpeed = 0f;
 
         if ((flags & CollisionFlags.Below) != 0 && verticalSpeed < 0f)
             verticalSpeed = groundedVerticalSpeed;
