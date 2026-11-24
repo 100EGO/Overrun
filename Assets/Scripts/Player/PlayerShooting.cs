@@ -138,6 +138,8 @@ public class PlayerShooting : MonoBehaviour
             ? muzzlePoint.position
             : transform.position + Vector3.up * shotHeight;
         Vector3 direction = transform.forward;
+        if (TryGetComponent(out ThirdPersonCameraRig rig) && rig.isActiveAndEnabled)
+            direction = rig.GetShotDirection(origin, range);
 
         CombatProjectile projectile = Instantiate(projectilePrefab, origin,
             Quaternion.LookRotation(direction));
