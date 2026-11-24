@@ -6,14 +6,15 @@ public class PlayerCameraProximity : MonoBehaviour
 {
     [SerializeField] private Renderer[] characterRenderers;
     [SerializeField] private Transform referencePoint;
-    [SerializeField, Min(0f)] private float hideDistance = 0.65f;
-    [SerializeField, Min(0f)] private float showDistance = 0.85f;
+    [SerializeField, Min(0f)] private float hideDistance = 0.25f;
+    [SerializeField, Min(0f)] private float showDistance = 0.45f;
     private ShadowCastingMode[] originalModes;
     private bool hidden;
 
     private void Awake()
     {
-        if (characterRenderers == null) characterRenderers = new Renderer[0];
+        if (characterRenderers == null || characterRenderers.Length == 0)
+            characterRenderers = GetComponentsInChildren<SkinnedMeshRenderer>(true);
         originalModes = new ShadowCastingMode[characterRenderers.Length];
         for (int i = 0; i < characterRenderers.Length; i++)
             if (characterRenderers[i] != null) originalModes[i] = characterRenderers[i].shadowCastingMode;
@@ -22,8 +23,15 @@ public class PlayerCameraProximity : MonoBehaviour
     private void LateUpdate()
     {
         Camera cam = Camera.main;
-        if (cam == null || referencePoint == null) return;
-        float distance = Vector3.Distance(cam.transform.position, referencePoint.position);
+        if (cam == null) return;
+        float distance = referencePoint != null
+            ? Vector3.Distance(cam.transform.position, referencePoint.position)
+            : float.PositiveInfinity;
+        foreach (Renderer renderer in characterRenderers)
+        {
+            if (renderer == null) continue;
+            distance = Mathf.Min(distance, Mathf.Sqrt(renderer.bounds.SqrDistance(cam.transform.position)));
+        }
         SetHidden(hidden ? distance < Mathf.Max(showDistance, hideDistance) : distance < hideDistance);
     }
 
