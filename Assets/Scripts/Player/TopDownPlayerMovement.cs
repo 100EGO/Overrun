@@ -52,7 +52,8 @@ public class TopDownPlayerMovement : MonoBehaviour
         if (TryGetComponent(out ThirdPersonCameraRig rig) && rig.isActiveAndEnabled)
         {
             direction = (rig.Right * horizontal + rig.Forward * vertical).normalized;
-            if (rig.IsAiming) sprintHeld = false;
+            rig.RotateCharacter(direction);
+            if (rig.IsInCombat) sprintHeld = false;
         }
         if (exhausted && CurrentStamina >= Mathf.Min(maxStamina, sprintResumeThreshold))
             exhausted = false;
