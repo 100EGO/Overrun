@@ -1100,14 +1100,14 @@ MonoBehaviour:
   CameraSide: 1
   CameraDistance: 1.5
   AvoidObstacles:
-    Enabled: 0
+    Enabled: 1
     CollisionFilter:
       serializedVersion: 2
-      m_Bits: 1
-    IgnoreTag: 
+      m_Bits: 4294967295
+    IgnoreTag: Player
     CameraRadius: 0.2
     DampingIntoCollision: 0
-    DampingFromCollision: 0.5
+    DampingFromCollision: 0.4
 --- !u!1001 &476667316
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1464,14 +1464,14 @@ MonoBehaviour:
   CameraSide: 1
   CameraDistance: 3.5
   AvoidObstacles:
-    Enabled: 0
+    Enabled: 1
     CollisionFilter:
       serializedVersion: 2
-      m_Bits: 1
-    IgnoreTag: 
+      m_Bits: 511
+    IgnoreTag: Player
     CameraRadius: 0.2
     DampingIntoCollision: 0
-    DampingFromCollision: 0.5
+    DampingFromCollision: 0.4
 --- !u!114 &599900191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2148,7 +2148,7 @@ GameObject:
   - component: {fileID: 917349053}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2185,6 +2185,7 @@ MonoBehaviour:
   sprintSpeed: 8
   gravity: 20
   groundedVerticalSpeed: -2
+  jumpHeight: 1.2
   maxStamina: 100
   sprintDrainPerSecond: 25
   staminaRegenPerSecond: 20
