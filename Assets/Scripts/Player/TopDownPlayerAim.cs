@@ -13,6 +13,8 @@ public class TopDownPlayerAim : MonoBehaviour
 
     private void Update()
     {
+        if (TryGetComponent(out ThirdPersonCameraRig rig) && rig.isActiveAndEnabled)
+            return;
         if (aimCamera == null || Mouse.current == null)
             return;
 
