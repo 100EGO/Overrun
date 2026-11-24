@@ -36,6 +36,8 @@ public class PlayerHealth : MonoBehaviour
             movement.enabled = false;
         if (TryGetComponent(out TopDownPlayerAim aim))
             aim.enabled = false;
+        if (TryGetComponent(out ThirdPersonCameraRig rig))
+            rig.enabled = false;
         if (TryGetComponent(out PlayerShooting shooting))
             shooting.enabled = false;
         if (TryGetComponent(out PlayerAnimation animation))
