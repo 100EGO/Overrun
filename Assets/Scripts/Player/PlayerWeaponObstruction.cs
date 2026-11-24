@@ -59,5 +59,42 @@ public class PlayerWeaponObstruction : MonoBehaviour
         return direction * allowed + Vector3.up * displacement.y;
     }
 
+    public Quaternion ConstrainRotation(Quaternion desired)
+    {
+        Quaternion start = transform.rotation;
+        if (!Ready) return desired;
+        GetBox(out Vector3 center, out Vector3 half, out Quaternion boxRotation);
+        Vector3 pivot = transform.position;
+        Transform box = weaponCollider.transform;
+        Vector3 boxPosition = box.position;
+        int steps = Mathf.Max(1, Mathf.CeilToInt(Quaternion.Angle(start, desired) / 2f));
+        Quaternion accepted = start;
+        float previousDepth = PenetrationDepth(center, half, boxRotation, boxPosition);
+        for (int i = 1; i <= steps; i++)
+        {
+            Quaternion candidate = Quaternion.Slerp(start, desired, (float)i / steps);
+            Quaternion delta = candidate * Quaternion.Inverse(start);
+            float depth = PenetrationDepth(pivot + delta * (center - pivot), half,
+                delta * boxRotation, pivot + delta * (boxPosition - pivot));
+            if (depth > previousDepth + 0.0001f) break;
+            accepted = candidate;
+            previousDepth = depth;
+        }
+        return accepted;
+    }
+
+    private float PenetrationDepth(Vector3 center, Vector3 half, Quaternion rotation, Vector3 position)
+    {
+        float depth = 0f;
+        foreach (Collider c in Physics.OverlapBox(center, half, rotation, obstacleLayers, QueryTriggerInteraction.Ignore))
+        {
+            if (!IsObstacle(c)) continue;
+            if (Physics.ComputePenetration(weaponCollider, position, rotation,
+                c, c.transform.position, c.transform.rotation, out _, out float distance))
+                depth = Mathf.Max(depth, distance);
+        }
+        return depth;
+    }
+
     private void OnDisable() => BlocksFire = false;
 }
