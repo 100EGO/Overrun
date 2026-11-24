@@ -16,6 +16,7 @@ public class PlayerAimIK : MonoBehaviour
     private PlayerHealth health;
     private TurretPlacement placement;
     private float angle;
+    private PlayerWeaponObstruction obstruction;
     private Quaternion originalRotation;
     private Quaternion appliedRotation;
     private bool applied;
@@ -27,6 +28,7 @@ public class PlayerAimIK : MonoBehaviour
     {
         cameraRig = GetComponent<ThirdPersonCameraRig>();
         shooting = GetComponent<PlayerShooting>();
+        obstruction = GetComponent<PlayerWeaponObstruction>();
         health = GetComponent<PlayerHealth>();
         placement = GetComponent<TurretPlacement>();
         if (spineBone == null || cameraRig == null)
@@ -45,6 +47,8 @@ public class PlayerAimIK : MonoBehaviour
             (health == null || !health.IsDead) &&
             (placement == null || !placement.BlocksShooting);
         float target = active ? Mathf.Clamp(cameraRig.Pitch * rotationMultiplier, minAngle, maxAngle) : 0f;
+        if (obstruction != null && obstruction.isActiveAndEnabled && (health == null || !health.IsDead))
+            target = Mathf.Lerp(target, obstruction.RaisedPitch, obstruction.Amount);
         angle = Mathf.Lerp(angle, target, 1f - Mathf.Exp(-blendSpeed * Time.deltaTime));
         if (rotationAxis.sqrMagnitude < 0.0001f) return;
         originalRotation = spineBone.localRotation;
