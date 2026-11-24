@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[DefaultExecutionOrder(50)]
 [RequireComponent(typeof(CharacterController))]
 public class PlayerAnimation : MonoBehaviour
 {
@@ -88,7 +89,7 @@ public class PlayerAnimation : MonoBehaviour
         animator.SetTrigger(DieHash);
     }
 
-    private void LateUpdate()
+    private void Update()
     {
         if (animator == null || isDead)
             return;
