@@ -1403,7 +1403,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 512076574}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5a28c01f02e54e4b9cda14c118b1d233, type: 3}
   m_Name: 
@@ -2146,6 +2146,8 @@ GameObject:
   - component: {fileID: 917349051}
   - component: {fileID: 917349052}
   - component: {fileID: 917349053}
+  - component: {fileID: 917349054}
+  - component: {fileID: 917349055}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -2454,6 +2456,42 @@ MonoBehaviour:
   maxAngle: 65
   blendSpeed: 8
   invertAxis: 1
+--- !u!114 &917349054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 917349041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 510c5e87d55b0d7489917dc3b64d7ec8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerWeaponObstruction
+  obstacleLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  probeHeight: 1.3
+  probeDistance: 1.2
+  probeRadius: 0.15
+  raisedPitch: -65
+  blendSpeed: 12
+--- !u!114 &917349055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 917349041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa5c66a9ee5ef5f4a85431e56076935a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCameraProximity
+  characterRenderers: []
+  referencePoint: {fileID: 1821944730}
+  hideDistance: 0.65
+  showDistance: 0.85
 --- !u!1 &925605924
 GameObject:
   m_ObjectHideFlags: 0
