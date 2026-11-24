@@ -70,8 +70,11 @@ public class ThirdPersonCameraRig : MonoBehaviour
         direction.y = 0f;
         if (direction.sqrMagnitude < 0.0001f) return;
         Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation,
+        Quaternion desired = Quaternion.RotateTowards(transform.rotation, targetRotation,
             (combat ? combatRotationSpeed : movementRotationSpeed) * Time.deltaTime);
+        if (TryGetComponent(out PlayerWeaponObstruction obstruction) && obstruction.isActiveAndEnabled)
+            desired = obstruction.ConstrainRotation(desired);
+        transform.rotation = desired;
     }
 
     private void LateUpdate() => UpdateTarget();
