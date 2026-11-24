@@ -90,7 +90,10 @@ public class TopDownPlayerMovement : MonoBehaviour
             verticalSpeed -= gravity * Time.deltaTime;
 
         Vector3 velocity = direction * (IsSprinting ? sprintSpeed : moveSpeed) + Vector3.up * verticalSpeed;
-        CollisionFlags flags = controller.Move(velocity * Time.deltaTime);
+        Vector3 displacement = velocity * Time.deltaTime;
+        if (TryGetComponent(out PlayerWeaponObstruction obstruction) && obstruction.isActiveAndEnabled)
+            displacement = obstruction.ConstrainMovement(displacement);
+        CollisionFlags flags = controller.Move(displacement);
 
         IsAirborne = (flags & CollisionFlags.Below) == 0;
         if ((flags & CollisionFlags.Above) != 0 && verticalSpeed > 0f)
