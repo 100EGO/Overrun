@@ -4,6 +4,7 @@ using UnityEngine;
 public class PlayerAimIK : MonoBehaviour
 {
     [SerializeField] private Transform spineBone;
+    [SerializeField] private Transform weaponBone;
     [SerializeField] private Vector3 rotationAxis = Vector3.forward;
     [SerializeField] private float rotationMultiplier = 1f;
     [SerializeField] private float minAngle = -35f;
@@ -18,6 +19,9 @@ public class PlayerAimIK : MonoBehaviour
     private Quaternion originalRotation;
     private Quaternion appliedRotation;
     private bool applied;
+    private bool weaponApplied;
+    private Vector3 weaponOriginalPosition, weaponAppliedPosition;
+    private Quaternion weaponOriginalRotation, weaponAppliedRotation;
 
     private void Awake()
     {
@@ -45,8 +49,25 @@ public class PlayerAimIK : MonoBehaviour
         if (rotationAxis.sqrMagnitude < 0.0001f) return;
         originalRotation = spineBone.localRotation;
         appliedRotation = originalRotation * Quaternion.AngleAxis(invertAxis ? -angle : angle, rotationAxis.normalized);
+        Quaternion before = spineBone.rotation;
+        Vector3 pivot = spineBone.position;
         spineBone.localRotation = appliedRotation;
         applied = true;
+
+        // A sibling weapon bone must inherit the same world-space pivot rotation.
+        if (weaponBone != null && weaponBone != spineBone &&
+            !weaponBone.IsChildOf(spineBone) && !spineBone.IsChildOf(weaponBone))
+        {
+            Quaternion delta = spineBone.rotation * Quaternion.Inverse(before);
+            weaponOriginalPosition = weaponBone.localPosition;
+            weaponOriginalRotation = weaponBone.localRotation;
+            weaponBone.SetPositionAndRotation(
+                pivot + delta * (weaponBone.position - pivot),
+                delta * weaponBone.rotation);
+            weaponAppliedPosition = weaponBone.localPosition;
+            weaponAppliedRotation = weaponBone.localRotation;
+            weaponApplied = true;
+        }
     }
 
     private void RestorePose()
@@ -54,6 +75,14 @@ public class PlayerAimIK : MonoBehaviour
         if (applied && spineBone != null && Quaternion.Angle(spineBone.localRotation, appliedRotation) < 0.01f)
             spineBone.localRotation = originalRotation;
         applied = false;
+        if (weaponApplied && weaponBone != null)
+        {
+            if ((weaponBone.localPosition - weaponAppliedPosition).sqrMagnitude < 0.00000001f)
+                weaponBone.localPosition = weaponOriginalPosition;
+            if (Quaternion.Angle(weaponBone.localRotation, weaponAppliedRotation) < 0.01f)
+                weaponBone.localRotation = weaponOriginalRotation;
+        }
+        weaponApplied = false;
     }
 
     private void OnDisable()
