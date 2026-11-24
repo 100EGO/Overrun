@@ -20,6 +20,7 @@ public class ThirdPersonCameraRig : MonoBehaviour
     private float pitch = 10f;
     private PlayerHealth health;
     private TurretPlacement placement;
+    public float Pitch => pitch;
     public bool IsAiming { get; private set; }
     public bool IsInCombat => IsAiming ||
         (Mouse.current != null && Mouse.current.leftButton.isPressed &&
