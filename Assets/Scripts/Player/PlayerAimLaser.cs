@@ -30,6 +30,8 @@ public class PlayerAimLaser : MonoBehaviour
             ? playerShooting.MuzzlePoint.position
             : transform.position + Vector3.up * shotHeight;
         Vector3 direction = transform.forward;
+        if (TryGetComponent(out ThirdPersonCameraRig rig) && rig.isActiveAndEnabled)
+            direction = rig.GetShotDirection(origin, range);
         Vector3 end = origin + direction * range;
 
         // Ignore colliders belonging to this player, and find the closest obstacle.
