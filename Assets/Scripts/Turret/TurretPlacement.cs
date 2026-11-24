@@ -101,7 +101,9 @@ public class TurretPlacement : MonoBehaviour
         validPlacement = false;
         if (preview == null || placementCamera == null || Mouse.current == null) return;
 
-        Ray ray = placementCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+        Ray ray = TryGetComponent(out ThirdPersonCameraRig rig) && rig.isActiveAndEnabled
+            ? placementCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f))
+            : placementCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (!Physics.Raycast(ray, out RaycastHit hit, 500f, groundMask, QueryTriggerInteraction.Ignore))
         {
             preview.SetActive(false);
